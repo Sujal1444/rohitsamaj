@@ -61,7 +61,7 @@ const ukCategories = [
   ["Apartment", "uk-apartment.jpg"],
   ["Autommotor", "car.png"],
   ["Buffet", "uk-buffet.jpg"],
-  ["Business", "uk-business.png"],
+  ["Business", "uk-business.jpg"],
   ["Cafe", "uk-cafe.jpg"],
   ["Casual Dining", "uk-casual-dining.jpg"],
   ["Commercial", "uk-commercial.jpg"],

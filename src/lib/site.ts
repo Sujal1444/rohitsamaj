@@ -8,7 +8,7 @@ export const contact = {
   email: "milaycomputer@hotmail.com",
 };
 
-export const heroImage = "https://rohitsamaj.com/wp-content/uploads/2026/04/banner.png";
+export const heroImage = "/images/banner.png";
 
 export function absoluteUrl(path: string) {
   if (path.startsWith("http")) return path;

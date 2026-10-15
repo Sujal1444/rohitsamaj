@@ -79,7 +79,7 @@ export function saveSubmission(input: SubmissionInput): Listing {
     directoryType: input.directoryType,
     country: input.country,
     city: input.city.trim(),
-    image: siteImage(input.country === "UK" ? "uk-business.png" : "commercial.jpg"),
+    image: siteImage(input.country === "UK" ? "uk-business.jpg" : "commercial.jpg"),
     rating: null,
     reviews: 0,
     phone: input.phone.trim(),

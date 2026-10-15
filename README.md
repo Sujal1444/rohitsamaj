@@ -1,32 +1,28 @@
-# Homehaven Style Explorer
+# Rohit Samaj
 
-https://rohitsamaj.com/en-us/home-in/
-
-this is the website that i want to redesign and redevelop a new website , provide me 2-3 samples of this website with a new design
+Local business directory for India and the United Kingdom.
 
 ## Design
 
 - Live site: [Home India](https://rohitsamaj.com/en-us/home-in/)
+- Deployed preview: [rohitsamaj.vercel.app](https://rohitsamaj.vercel.app/india)
 - Figma template: [Rohit Samaj Website Template](https://www.figma.com/design/kEu17U7emr49EcdKKItIK6)
 - Homepage frame: [Homepage](https://www.figma.com/design/kEu17U7emr49EcdKKItIK6?node-id=2-30)
 
-This project was built with [Lovable](https://lovable.dev).
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/94b0ee66-d3e7-4f0b-842f-d682be7489c8).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+Category and listing photos live in `public/images/` and are referenced as `/images/...`.
 
 ## Development
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+You need Node.js and npm.
 
 ```sh
 git clone <this-repository-url>
 cd <repository-name>
 npm i
 npm run dev
+```
+
+```sh
+npm test
+npm run build
 ```

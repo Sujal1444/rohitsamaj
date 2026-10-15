@@ -32,9 +32,10 @@ describe("Current Rohit Samaj directory content", () => {
     expect(services.filter((item) => item.country === "India")).toHaveLength(27);
     expect(services.filter((item) => item.country === "UK").length).toBeGreaterThanOrEqual(28);
     expect(services.every((item) => item.sourceUrl.startsWith("https://rohitsamaj.com/"))).toBe(true);
-    expect(services.find((item) => item.country === "India" && item.name === "Town House")?.image).toContain("town-house.jpg");
-    expect(services.find((item) => item.country === "UK" && item.name === "Cafe")?.image).toContain("uk-cafe.jpg");
-    expect(services.find((item) => item.country === "UK" && item.name === "Town House")?.image).toContain("uk-town-house.jpg");
+    expect(services.find((item) => item.country === "India" && item.name === "Town House")?.image).toBe("/images/town-house.jpg");
+    expect(services.find((item) => item.country === "UK" && item.name === "Cafe")?.image).toBe("/images/uk-cafe.jpg");
+    expect(services.find((item) => item.country === "UK" && item.name === "Town House")?.image).toBe("/images/uk-town-house.jpg");
+    expect(services.every((item) => item.image.startsWith("/images/") && !item.image.includes("__l5e"))).toBe(true);
   });
 
   it("preserves real survey contacts and does not manufacture UK reviews", () => {
