@@ -1,15 +1,16 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
+import { PageHero } from "@/components/site/page-hero";
 import { PageShell } from "@/components/site/page-shell";
-import { clearAccount, readAccount, readSaved, saveAccount, type Account } from "@/lib/directory-storage";
 import { listings } from "@/lib/directory-content";
+import { clearAccount, readAccount, readSaved, readSubmissions, saveAccount, type Account } from "@/lib/directory-storage";
 import { pageHead } from "@/lib/site";
 
 export const Route = createFileRoute("/account")({
   head: () => {
     const head = pageHead({
       title: "Account | Rohit Samaj",
-      description: "Sign in on this device to keep your Rohit Samaj profile with your saved listings.",
+      description: "Keep your Rohit Samaj profile and saved listings on this device.",
       path: "/account",
     });
     return { ...head, meta: [...head.meta, { name: "robots", content: "noindex" }] };
@@ -19,10 +20,11 @@ export const Route = createFileRoute("/account")({
 
 function AccountPage() {
   const [account, setAccount] = useState<Account | null>(null);
-  const [savedNames, setSavedNames] = useState<string[]>([]);
+  const [savedItems, setSavedItems] = useState<Array<{ id: string; name: string; country: string; slug: string }>>([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const current = readAccount();
@@ -32,66 +34,103 @@ function AccountPage() {
       setEmail(current.email);
     }
     const saved = new Set(readSaved());
-    setSavedNames(listings.filter((item) => saved.has(item.id)).map((item) => item.name));
-  }, [account?.email]);
+    const catalog = [...listings, ...readSubmissions()];
+    setSavedItems(
+      catalog
+        .filter((item) => saved.has(item.id))
+        .map((item) => ({ id: item.id, name: item.name, country: item.country, slug: item.slug })),
+    );
+  }, []);
 
   function onSubmit(event: FormEvent) {
     event.preventDefault();
     if (name.trim().length < 2 || !email.includes("@")) {
       setError("Enter your name and a valid email.");
+      setMessage("");
       return;
     }
     const next = { name: name.trim(), email: email.trim() };
     saveAccount(next);
     setAccount(next);
     setError("");
+    setMessage("Profile saved on this device.");
   }
 
   return (
     <PageShell>
-      <article className="mx-auto w-full max-w-3xl px-5 py-12">
-        <h1 className="text-5xl leading-[56px] font-semibold max-md:text-[32px] max-md:leading-10">Your account</h1>
-        <p className="mt-4 text-base leading-[26px] text-muted-foreground">
-          This profile stays in this browser with your saved listings. It is not sent to a server.
-        </p>
-        <form className="mt-8 grid max-w-lg gap-4" onSubmit={onSubmit}>
-          <label className="grid gap-1 text-sm">
-            Name
-            <input className="rounded-md border border-border px-3 py-2 text-base" value={name} onChange={(event) => setName(event.target.value)} required />
-          </label>
-          <label className="grid gap-1 text-sm">
-            Email
-            <input type="email" className="rounded-md border border-border px-3 py-2 text-base" value={email} onChange={(event) => setEmail(event.target.value)} required />
-          </label>
-          {error ? <p className="text-sm text-brand">{error}</p> : null}
-          <div className="flex gap-3">
-            <button type="submit" className="rounded-md bg-brand px-5 py-3 text-sm font-medium text-white">
-              {account ? "Update profile" : "Save profile"}
-            </button>
-            {account ? (
-              <button
-                type="button"
-                className="rounded-md border border-border px-5 py-3 text-sm"
-                onClick={() => {
-                  clearAccount();
-                  setAccount(null);
-                  setName("");
-                  setEmail("");
-                }}
-              >
-                Sign out
+      <PageHero
+        title="Your account"
+        description="Your profile and saved listings stay in this browser. Nothing is sent to a server."
+      />
+      <article className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-12 lg:grid-cols-2">
+        <section className="rounded-lg border border-border bg-background px-6 py-6">
+          <h2 className="text-[32px] leading-10 font-semibold">Profile</h2>
+          <p className="mt-2 text-base leading-[26px] text-muted-foreground">
+            {account ? `Signed in as ${account.name}.` : "Save a local profile to remember your details on this device."}
+          </p>
+          <form className="mt-6 grid gap-4" onSubmit={onSubmit}>
+            <label className="grid gap-1 text-sm">
+              Name
+              <input className="rounded-md border border-border px-3 py-2 text-base" value={name} onChange={(event) => setName(event.target.value)} required />
+            </label>
+            <label className="grid gap-1 text-sm">
+              Email
+              <input type="email" className="rounded-md border border-border px-3 py-2 text-base" value={email} onChange={(event) => setEmail(event.target.value)} required />
+            </label>
+            {error ? <p className="text-sm text-brand">{error}</p> : null}
+            {message ? <p className="text-sm text-primary">{message}</p> : null}
+            <div className="flex flex-wrap gap-3">
+              <button type="submit" className="rounded-md bg-brand px-5 py-3 text-sm font-medium text-white hover:text-white">
+                {account ? "Update profile" : "Save profile"}
               </button>
-            ) : null}
-          </div>
-        </form>
-        <h2 className="mt-10 text-xl leading-7 font-semibold">Saved listings</h2>
-        {savedNames.length === 0 ? (
-          <p className="mt-2 text-muted-foreground">You have not saved any listings yet.</p>
-        ) : (
-          <ul className="mt-3 list-disc pl-5">
-            {savedNames.map((item) => <li key={item}>{item}</li>)}
-          </ul>
-        )}
+              {account ? (
+                <button
+                  type="button"
+                  className="rounded-md border border-border px-5 py-3 text-sm"
+                  onClick={() => {
+                    clearAccount();
+                    setAccount(null);
+                    setName("");
+                    setEmail("");
+                    setMessage("Signed out on this device.");
+                    setError("");
+                  }}
+                >
+                  Sign out
+                </button>
+              ) : null}
+            </div>
+          </form>
+        </section>
+        <section className="rounded-lg bg-secondary px-6 py-6">
+          <h2 className="text-[32px] leading-10 font-semibold">Saved listings</h2>
+          <p className="mt-2 text-base leading-[26px] text-muted-foreground">
+            Heart a business on a directory page to keep it here.
+          </p>
+          {savedItems.length === 0 ? (
+            <div className="mt-6">
+              <p className="text-base leading-[26px]">You have not saved any listings yet.</p>
+              <Link to="/india" className="mt-4 inline-flex rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">
+                Browse listings
+              </Link>
+            </div>
+          ) : (
+            <ul className="mt-6 space-y-3">
+              {savedItems.map((item) => (
+                <li key={item.id} className="border-b border-border pb-3 last:border-b-0">
+                  <Link
+                    to={item.country === "India" ? "/india/listing/$slug" : "/uk/listing/$slug"}
+                    params={{ slug: item.slug }}
+                    className="text-base font-medium text-primary"
+                  >
+                    {item.name}
+                  </Link>
+                  <p className="text-sm text-muted-foreground">{item.country}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
       </article>
     </PageShell>
   );

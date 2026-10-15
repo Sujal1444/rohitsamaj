@@ -1,11 +1,10 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { DirectoryView } from "@/components/site/directory-view";
 import { JsonLd } from "@/components/site/json-ld";
-import { getCategory, listings, parseDirectorySearch } from "@/lib/directory-content";
+import { getCategory, listings } from "@/lib/directory-content";
 import { absoluteUrl, pageHead } from "@/lib/site";
 
 export const Route = createFileRoute("/uk/category/$slug")({
-  validateSearch: parseDirectorySearch,
   loader: ({ params }) => {
     const category = getCategory("UK", params.slug);
     if (!category) throw notFound();
@@ -25,8 +24,6 @@ export const Route = createFileRoute("/uk/category/$slug")({
 
 function UkCategoryPage() {
   const { category } = Route.useLoaderData();
-  const search = Route.useSearch();
-  const navigate = Route.useNavigate();
   const items = listings.filter((item) => item.country === "UK" && item.category === category.name);
   return (
     <>
@@ -43,14 +40,7 @@ function UkCategoryPage() {
           })),
         }}
       />
-      <DirectoryView
-        country="UK"
-        category={category.name}
-        search={search}
-        onSearchChange={(next) => {
-          void navigate({ search: next, replace: true });
-        }}
-      />
+      <DirectoryView country="UK" category={category.name} />
     </>
   );
 }

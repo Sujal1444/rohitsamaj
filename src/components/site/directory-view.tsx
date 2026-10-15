@@ -19,21 +19,23 @@ import { PageShell } from "./page-shell";
 export function DirectoryView({
   country,
   category = "All",
-  search,
-  onSearchChange,
 }: {
   country: Country;
   category?: string;
-  search: DirectorySearch;
-  onSearchChange: (next: DirectorySearch) => void;
 }) {
   const navigate = useNavigate();
+  const [search, setSearch] = useState<DirectorySearch>(defaultDirectorySearch);
   const [saved, setSaved] = useState<string[]>([]);
   const [submissions, setSubmissions] = useState(sourceListings);
+
   useEffect(() => {
     setSaved(readSaved());
     setSubmissions([...sourceListings, ...readSubmissions()]);
   }, []);
+
+  useEffect(() => {
+    setSearch(defaultDirectorySearch);
+  }, [country, category]);
 
   const visible = sortListings(
     filterListings(country, category, search.q, search.city, search.type, submissions),
@@ -41,15 +43,22 @@ export function DirectoryView({
   );
 
   function reset() {
-    onSearchChange(defaultDirectorySearch);
+    setSearch(defaultDirectorySearch);
     if (category !== "All") {
-      void navigate({ to: country === "India" ? "/india" : "/uk", search: defaultDirectorySearch });
+      void navigate({ to: country === "India" ? "/india" : "/uk" });
     }
   }
 
   return (
     <PageShell country={country}>
-      <HeroSearch country={country} category={category === "All" ? undefined : category} search={search} listings={submissions} onSearchChange={onSearchChange} onReset={reset} />
+      <HeroSearch
+        country={country}
+        category={category === "All" ? undefined : category}
+        search={search}
+        listings={submissions}
+        onSearchChange={setSearch}
+        onReset={reset}
+      />
       {category === "All" ? <CategoryGrid country={country} categories={categoriesFor(country)} listings={submissions} /> : null}
       <section className="mx-auto w-full max-w-6xl px-5 py-12" aria-labelledby="listings-title">
         <div className="mb-6 flex items-end justify-between gap-4">

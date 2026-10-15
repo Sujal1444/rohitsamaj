@@ -4,7 +4,7 @@ import { JsonLd } from "./json-ld";
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border">
+    <footer className="mt-10 bg-hero text-white">
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -22,22 +22,38 @@ export function SiteFooter() {
           sameAs: [absoluteUrl("/india"), absoluteUrl("/uk")],
         }}
       />
-      <div className="mx-auto grid w-full max-w-6xl gap-6 px-5 py-8 text-sm leading-[22px] md:grid-cols-3">
+      <div className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-12 text-sm leading-[22px] md:grid-cols-3">
         <div>
           <p className="text-xl leading-7 font-semibold">rohitsamaj</p>
-          <p className="mt-2 text-xs leading-4 text-muted-foreground">© 2026 Rohit Samaj. All rights reserved.</p>
+          <p className="mt-2 text-xs leading-4 text-white/70">© 2026 Rohit Samaj. All rights reserved.</p>
         </div>
-        <address className="not-italic text-muted-foreground">
-          <p className="font-medium text-foreground">Contact</p>
+        <address className="not-italic text-white/80">
+          <p className="font-medium text-white">Contact</p>
           <p>{contact.address}</p>
-          <p><a className="text-primary" href={contact.phoneHref}>{contact.phone}</a></p>
-          <p><a className="text-primary" href={`mailto:${contact.email}`}>{contact.email}</a></p>
+          <p>
+            <a className="text-white underline-offset-2 hover:underline" href={contact.phoneHref}>
+              {contact.phone}
+            </a>
+          </p>
+          <p>
+            <a className="text-white underline-offset-2 hover:underline" href={`mailto:${contact.email}`}>
+              {contact.email}
+            </a>
+          </p>
         </address>
         <nav className="flex flex-col gap-2 md:items-end" aria-label="Footer">
-          <Link to="/about">About us</Link>
-          <Link to="/contact">Contact</Link>
-          <Link to="/add-listing">Add a listing</Link>
-          <Link to="/account">Account</Link>
+          <Link to="/about" className="text-white/90 hover:text-white">
+            About us
+          </Link>
+          <Link to="/contact" className="text-white/90 hover:text-white">
+            Contact
+          </Link>
+          <Link to="/add-listing" className="text-white/90 hover:text-white">
+            Add a listing
+          </Link>
+          <Link to="/account" className="text-white/90 hover:text-white">
+            Account
+          </Link>
         </nav>
       </div>
     </footer>

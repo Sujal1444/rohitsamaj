@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Mail, MapPin, Phone } from "lucide-react";
+import { PageHero } from "@/components/site/page-hero";
 import { PageShell } from "@/components/site/page-shell";
 import { contact, pageHead } from "@/lib/site";
 
@@ -15,20 +17,39 @@ export const Route = createFileRoute("/contact")({
 function ContactPage() {
   return (
     <PageShell>
-      <article className="mx-auto w-full max-w-3xl px-5 py-12">
-        <h1 className="text-5xl leading-[56px] font-semibold max-md:text-[32px] max-md:leading-10">Contact Rohit Samaj</h1>
-        <p className="mt-4 text-base leading-[26px] text-muted-foreground">
-          Use these details for questions about the directory or a business listing.
+      <PageHero
+        title="Contact Rohit Samaj"
+        description="Questions about the directory or a business listing? Reach us with the details below."
+      />
+      <article className="mx-auto w-full max-w-6xl px-5 py-12">
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="rounded-lg border border-border bg-background px-5 py-6">
+            <MapPin className="size-5 text-primary" aria-hidden="true" />
+            <h2 className="mt-4 text-xl leading-7 font-semibold">Address</h2>
+            <p className="mt-2 text-base leading-[26px] text-muted-foreground">{contact.address}</p>
+          </div>
+          <div className="rounded-lg border border-border bg-background px-5 py-6">
+            <Phone className="size-5 text-primary" aria-hidden="true" />
+            <h2 className="mt-4 text-xl leading-7 font-semibold">Phone</h2>
+            <p className="mt-2 text-base leading-[26px]">
+              <a className="text-primary" href={contact.phoneHref}>
+                {contact.phone}
+              </a>
+            </p>
+          </div>
+          <div className="rounded-lg border border-border bg-background px-5 py-6">
+            <Mail className="size-5 text-primary" aria-hidden="true" />
+            <h2 className="mt-4 text-xl leading-7 font-semibold">Email</h2>
+            <p className="mt-2 text-base leading-[26px]">
+              <a className="text-primary" href={`mailto:${contact.email}`}>
+                {contact.email}
+              </a>
+            </p>
+          </div>
+        </div>
+        <p className="mt-8 max-w-2xl text-base leading-[26px] text-muted-foreground">
+          These are the official Rohit Samaj contact details used across the site. For listing updates, include the business name and country in your message.
         </p>
-        <address className="mt-8 space-y-3 text-base not-italic leading-[26px]">
-          <p>{contact.address}</p>
-          <p>
-            <a className="text-primary" href={contact.phoneHref}>{contact.phone}</a>
-          </p>
-          <p>
-            <a className="text-primary" href={`mailto:${contact.email}`}>{contact.email}</a>
-          </p>
-        </address>
       </article>
     </PageShell>
   );

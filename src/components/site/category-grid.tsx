@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { defaultDirectorySearch, listingCount, slugify, type Country, type Listing, type Service } from "@/lib/directory-content";
+import { listingCount, slugify, type Country, type Listing, type Service } from "@/lib/directory-content";
 
 export function CategoryGrid({ country, categories, listings }: { country: Country; categories: Service[]; listings: Listing[] }) {
   return (
@@ -10,7 +10,7 @@ export function CategoryGrid({ country, categories, listings }: { country: Count
             <h2 id="category-title" className="text-[32px] leading-10 font-semibold">Browse by category</h2>
             <p className="text-base leading-[26px] text-muted-foreground">Each category opens its own page.</p>
           </div>
-          <Link to={country === "India" ? "/india" : "/uk"} search={defaultDirectorySearch} className="text-sm font-medium text-primary">
+          <Link to={country === "India" ? "/india" : "/uk"} className="text-sm font-medium text-primary">
             Explore all
           </Link>
         </div>
@@ -18,8 +18,20 @@ export function CategoryGrid({ country, categories, listings }: { country: Count
           {categories.map((item) => {
             const count = listingCount(country, item.name, listings);
             return (
-              <Link key={item.name} to={country === "India" ? "/india/category/$slug" : "/uk/category/$slug"} params={{ slug: slugify(item.name) }} search={defaultDirectorySearch} className="overflow-hidden rounded-md border border-border bg-background">
-                <img src={item.image} alt={item.name} width={300} height={200} className="aspect-[3/2] w-full object-cover" loading="lazy" />
+              <Link
+                key={item.name}
+                to={country === "India" ? "/india/category/$slug" : "/uk/category/$slug"}
+                params={{ slug: slugify(item.name) }}
+                className="group overflow-hidden rounded-md border border-border bg-background transition duration-300 ease-out hover:-translate-y-1 hover:border-primary/30 hover:shadow-md"
+              >
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  width={300}
+                  height={200}
+                  className="aspect-[3/2] w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+                  loading="lazy"
+                />
                 <span className="flex items-center justify-between gap-2 px-3 py-2 text-sm leading-[22px]">
                   {item.name}
                   <span className="text-xs text-muted-foreground">{count}</span>
