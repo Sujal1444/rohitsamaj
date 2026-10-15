@@ -10,33 +10,196 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AccountRouteImport } from './routes/account'
+import { Route as AddListingRouteImport } from './routes/add-listing'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as IndiaRouteImport } from './routes/india'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as UkRouteImport } from './routes/uk'
+import { Route as IndiaIndexRouteImport } from './routes/india/index'
+import { Route as UkIndexRouteImport } from './routes/uk/index'
+import { Route as IndiaCategorySlugRouteImport } from './routes/india/category/$slug'
+import { Route as IndiaListingSlugRouteImport } from './routes/india/listing/$slug'
+import { Route as UkCategorySlugRouteImport } from './routes/uk/category/$slug'
+import { Route as UkListingSlugRouteImport } from './routes/uk/listing/$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AddListingRoute = AddListingRouteImport.update({
+  id: '/add-listing',
+  path: '/add-listing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndiaRoute = IndiaRouteImport.update({
+  id: '/india',
+  path: '/india',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UkRoute = UkRouteImport.update({
+  id: '/uk',
+  path: '/uk',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndiaIndexRoute = IndiaIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => IndiaRoute,
+} as any)
+const UkIndexRoute = UkIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => UkRoute,
+} as any)
+const IndiaCategorySlugRoute = IndiaCategorySlugRouteImport.update({
+  id: '/category/$slug',
+  path: '/category/$slug',
+  getParentRoute: () => IndiaRoute,
+} as any)
+const IndiaListingSlugRoute = IndiaListingSlugRouteImport.update({
+  id: '/listing/$slug',
+  path: '/listing/$slug',
+  getParentRoute: () => IndiaRoute,
+} as any)
+const UkCategorySlugRoute = UkCategorySlugRouteImport.update({
+  id: '/category/$slug',
+  path: '/category/$slug',
+  getParentRoute: () => UkRoute,
+} as any)
+const UkListingSlugRoute = UkListingSlugRouteImport.update({
+  id: '/listing/$slug',
+  path: '/listing/$slug',
+  getParentRoute: () => UkRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
+  '/add-listing': typeof AddListingRoute
+  '/contact': typeof ContactRoute
+  '/india': typeof IndiaRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/uk': typeof UkRouteWithChildren
+  '/india/': typeof IndiaIndexRoute
+  '/uk/': typeof UkIndexRoute
+  '/india/category/$slug': typeof IndiaCategorySlugRoute
+  '/india/listing/$slug': typeof IndiaListingSlugRoute
+  '/uk/category/$slug': typeof UkCategorySlugRoute
+  '/uk/listing/$slug': typeof UkListingSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
+  '/add-listing': typeof AddListingRoute
+  '/contact': typeof ContactRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/india': typeof IndiaIndexRoute
+  '/uk': typeof UkIndexRoute
+  '/india/category/$slug': typeof IndiaCategorySlugRoute
+  '/india/listing/$slug': typeof IndiaListingSlugRoute
+  '/uk/category/$slug': typeof UkCategorySlugRoute
+  '/uk/listing/$slug': typeof UkListingSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
+  '/add-listing': typeof AddListingRoute
+  '/contact': typeof ContactRoute
+  '/india': typeof IndiaRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/uk': typeof UkRouteWithChildren
+  '/india/': typeof IndiaIndexRoute
+  '/uk/': typeof UkIndexRoute
+  '/india/category/$slug': typeof IndiaCategorySlugRoute
+  '/india/listing/$slug': typeof IndiaListingSlugRoute
+  '/uk/category/$slug': typeof UkCategorySlugRoute
+  '/uk/listing/$slug': typeof UkListingSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/account'
+    | '/add-listing'
+    | '/contact'
+    | '/india'
+    | '/sitemap.xml'
+    | '/uk'
+    | '/india/'
+    | '/uk/'
+    | '/india/category/$slug'
+    | '/india/listing/$slug'
+    | '/uk/category/$slug'
+    | '/uk/listing/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/account'
+    | '/add-listing'
+    | '/contact'
+    | '/sitemap.xml'
+    | '/india'
+    | '/uk'
+    | '/india/category/$slug'
+    | '/india/listing/$slug'
+    | '/uk/category/$slug'
+    | '/uk/listing/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/account'
+    | '/add-listing'
+    | '/contact'
+    | '/india'
+    | '/sitemap.xml'
+    | '/uk'
+    | '/india/'
+    | '/uk/'
+    | '/india/category/$slug'
+    | '/india/listing/$slug'
+    | '/uk/category/$slug'
+    | '/uk/listing/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  AccountRoute: typeof AccountRoute
+  AddListingRoute: typeof AddListingRoute
+  ContactRoute: typeof ContactRoute
+  IndiaRoute: typeof IndiaRouteWithChildren
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  UkRoute: typeof UkRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +211,137 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/add-listing': {
+      id: '/add-listing'
+      path: '/add-listing'
+      fullPath: '/add-listing'
+      preLoaderRoute: typeof AddListingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/india': {
+      id: '/india'
+      path: '/india'
+      fullPath: '/india'
+      preLoaderRoute: typeof IndiaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/uk': {
+      id: '/uk'
+      path: '/uk'
+      fullPath: '/uk'
+      preLoaderRoute: typeof UkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/india/': {
+      id: '/india/'
+      path: '/'
+      fullPath: '/india/'
+      preLoaderRoute: typeof IndiaIndexRouteImport
+      parentRoute: typeof IndiaRoute
+    }
+    '/uk/': {
+      id: '/uk/'
+      path: '/'
+      fullPath: '/uk/'
+      preLoaderRoute: typeof UkIndexRouteImport
+      parentRoute: typeof UkRoute
+    }
+    '/india/category/$slug': {
+      id: '/india/category/$slug'
+      path: '/category/$slug'
+      fullPath: '/india/category/$slug'
+      preLoaderRoute: typeof IndiaCategorySlugRouteImport
+      parentRoute: typeof IndiaRoute
+    }
+    '/india/listing/$slug': {
+      id: '/india/listing/$slug'
+      path: '/listing/$slug'
+      fullPath: '/india/listing/$slug'
+      preLoaderRoute: typeof IndiaListingSlugRouteImport
+      parentRoute: typeof IndiaRoute
+    }
+    '/uk/category/$slug': {
+      id: '/uk/category/$slug'
+      path: '/category/$slug'
+      fullPath: '/uk/category/$slug'
+      preLoaderRoute: typeof UkCategorySlugRouteImport
+      parentRoute: typeof UkRoute
+    }
+    '/uk/listing/$slug': {
+      id: '/uk/listing/$slug'
+      path: '/listing/$slug'
+      fullPath: '/uk/listing/$slug'
+      preLoaderRoute: typeof UkListingSlugRouteImport
+      parentRoute: typeof UkRoute
+    }
   }
 }
 
+interface IndiaRouteChildren {
+  IndiaIndexRoute: typeof IndiaIndexRoute
+  IndiaCategorySlugRoute: typeof IndiaCategorySlugRoute
+  IndiaListingSlugRoute: typeof IndiaListingSlugRoute
+}
+
+const IndiaRouteChildren: IndiaRouteChildren = {
+  IndiaIndexRoute: IndiaIndexRoute,
+  IndiaCategorySlugRoute: IndiaCategorySlugRoute,
+  IndiaListingSlugRoute: IndiaListingSlugRoute,
+}
+
+const IndiaRouteWithChildren = IndiaRoute._addFileChildren(IndiaRouteChildren)
+
+interface UkRouteChildren {
+  UkIndexRoute: typeof UkIndexRoute
+  UkCategorySlugRoute: typeof UkCategorySlugRoute
+  UkListingSlugRoute: typeof UkListingSlugRoute
+}
+
+const UkRouteChildren: UkRouteChildren = {
+  UkIndexRoute: UkIndexRoute,
+  UkCategorySlugRoute: UkCategorySlugRoute,
+  UkListingSlugRoute: UkListingSlugRoute,
+}
+
+const UkRouteWithChildren = UkRoute._addFileChildren(UkRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  AccountRoute: AccountRoute,
+  AddListingRoute: AddListingRoute,
+  ContactRoute: ContactRoute,
+  IndiaRoute: IndiaRouteWithChildren,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  UkRoute: UkRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

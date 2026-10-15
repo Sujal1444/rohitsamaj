@@ -4,6 +4,12 @@ https://rohitsamaj.com/en-us/home-in/
 
 this is the website that i want to redesign and redevelop a new website , provide me 2-3 samples of this website with a new design
 
+## Design
+
+- Live site: [Home India](https://rohitsamaj.com/en-us/home-in/)
+- Figma template: [Rohit Samaj Website Template](https://www.figma.com/design/kEu17U7emr49EcdKKItIK6)
+- Homepage frame: [Homepage](https://www.figma.com/design/kEu17U7emr49EcdKKItIK6?node-id=2-30)
+
 This project was built with [Lovable](https://lovable.dev).
 
 ## Build with Lovable

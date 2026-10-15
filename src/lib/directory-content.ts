@@ -1,87 +1,340 @@
-const serviceImages = [
-  'apartment.jpg', 'automotive.jpg', 'buffet.jpg', 'cafe.jpg', 'casual-dining.jpg',
-  'commercial.jpg', 'coworking.jpg', 'culture.jpg', 'education.jpg', 'electronics.jpg',
-  'family-house.jpg', 'fast-food.jpg', 'fine-dining.jpg', 'food.jpg', 'gym-fitness.jpg',
-  'health-beauty.jpg', 'homes.jpg', 'hotels.jpg', 'office.jpg', 'outdoor-activities.jpg',
-  'place.jpg', 'property.jpg', 'residential.jpg', 'salon.jpg', 'shopping.jpg', 'tour.jpg',
-  'residential.jpg',
-].map((filename) => `/images/${filename}`);
-const ukServiceImages = [
-  '/images/apartment.jpg', '/images/buffet.jpg', '/images/commercial.jpg', '/images/cafe.jpg',
-  '/images/casual-dining.jpg', '/images/commercial.jpg', '/images/coworking.jpg', '/images/culture.jpg',
-  '/images/education.jpg', '/images/electronics.jpg', '/images/family-house.jpg', '/images/fast-food.jpg',
-  '/images/fine-dining.jpg', '/images/food.jpg', '/images/gym-fitness.jpg', '/images/health-beauty.jpg',
-  '/images/homes.jpg', '/images/hotels.jpg', '/images/it.png', '/images/office.jpg',
-  '/images/outdoor-activities.jpg', '/images/place.jpg', '/images/property.jpg', '/images/residential.jpg',
-  '/images/salon.jpg', '/images/shopping.jpg', '/images/tour.jpg', '/images/residential.jpg',
+import { siteImage } from "./site-images";
+
+export const countries = ["India", "UK"] as const;
+export type Country = (typeof countries)[number];
+export const directoryTypes = ["Business", "Classified", "General", "Hotels", "Place", "Restaurant"] as const;
+export type DirectoryType = (typeof directoryTypes)[number];
+export const sortOptions = [
+  { value: "featured", label: "Featured" },
+  { value: "name-asc", label: "A to Z" },
+  { value: "name-desc", label: "Z to A" },
+  { value: "newest", label: "Newest" },
+  { value: "oldest", label: "Oldest" },
+] as const;
+export type SortValue = (typeof sortOptions)[number]["value"];
+
+export type DirectorySearch = {
+  q: string;
+  city: string;
+  type: string;
+  sort: SortValue;
+};
+
+export const defaultDirectorySearch: DirectorySearch = {
+  q: "",
+  city: "All locations",
+  type: "All",
+  sort: "featured",
+};
+
+const indiaCategories = [
+  ["Apartment", "apartment.jpg"],
+  ["Automotive", "automotive.jpg"],
+  ["Buffet", "buffet.jpg"],
+  ["Cafe", "cafe.jpg"],
+  ["Casual Dining", "casual-dining.jpg"],
+  ["Commercial", "commercial.jpg"],
+  ["Coworking", "coworking.jpg"],
+  ["Culture", "culture.jpg"],
+  ["Education", "education.jpg"],
+  ["Electronics", "electronics.jpg"],
+  ["Family House", "family-house.jpg"],
+  ["Fast Food", "fast-food.jpg"],
+  ["Fine Dining", "fine-dining.jpg"],
+  ["Food", "food.jpg"],
+  ["Gym & Fitness", "gym-fitness.jpg"],
+  ["Health & Beauty", "health-beauty.jpg"],
+  ["Homes", "homes.jpg"],
+  ["Hotels", "hotels.jpg"],
+  ["Office", "office.jpg"],
+  ["Outdoor Activities", "outdoor-activities.jpg"],
+  ["Place", "place.jpg"],
+  ["Property", "property.jpg"],
+  ["Residential", "residential.jpg"],
+  ["Salon", "salon.jpg"],
+  ["Shopping", "shopping.jpg"],
+  ["Tour", "tour.jpg"],
+  ["Town House", "town-house.jpg"],
+] as const;
+
+const ukCategories = [
+  ["Apartment", "uk-apartment.jpg"],
+  ["Autommotor", "car.png"],
+  ["Buffet", "uk-buffet.jpg"],
+  ["Business", "uk-business.png"],
+  ["Cafe", "uk-cafe.jpg"],
+  ["Casual Dining", "uk-casual-dining.jpg"],
+  ["Commercial", "uk-commercial.jpg"],
+  ["Coworking", "uk-coworking.jpg"],
+  ["Culture", "uk-culture.jpg"],
+  ["Education", "uk-education.jpg"],
+  ["Electronics", "uk-electronics.jpg"],
+  ["Family House", "uk-family-house.jpg"],
+  ["Fast Food", "uk-fast-food.jpg"],
+  ["Fine Dining", "uk-fine-dining.jpg"],
+  ["Food", "uk-food.jpg"],
+  ["Gym & Fitness", "uk-gym-fitness.jpg"],
+  ["Handy Man", "handy.png"],
+  ["Health & Beauty", "uk-health-beauty.jpg"],
+  ["Homes", "uk-homes.jpg"],
+  ["Hotels", "uk-hotels.jpg"],
+  ["IT Services", "uk-it-services.jpg"],
+  ["Office", "uk-office.jpg"],
+  ["Outdoor Activities", "uk-outdoor-activities.jpg"],
+  ["Place", "uk-place.jpg"],
+  ["Property", "uk-property.jpg"],
+  ["Residential", "uk-residential.jpg"],
+  ["Salon", "uk-salon.jpg"],
+  ["Shopping", "uk-shopping.jpg"],
+  ["Tour", "uk-tour.jpg"],
+  ["Town House", "uk-town-house.jpg"],
+] as const;
+
+function categorySource(country: Country, name: string) {
+  const slug = slugify(name);
+  if (country === "India") return `https://rohitsamaj.com/en-us/single-category/${slug}/`;
+  return `https://rohitsamaj.com/en-uk/single-category-uk/?category=${slug}-uk&directory_type=business`;
+}
+
+export const services = [
+  ...indiaCategories.map(([name, file]) => ({
+    name,
+    country: "India" as const,
+    image: siteImage(file),
+    sourceUrl: categorySource("India", name),
+  })),
+  ...ukCategories.map(([name, file]) => ({
+    name,
+    country: "UK" as const,
+    image: siteImage(file),
+    sourceUrl: categorySource("UK", name),
+  })),
 ];
 
-export const heroImage = '/images/banner.png';
-export const heroOriginalUrl = 'https://rohitsamaj.com/wp-content/uploads/2026/04/banner.png';
-export const services = [
-  { name: "Apartment", country: "India", image: serviceImages[0], sourceUrl: "https://rohitsamaj.com/en-us/single-category/apartment/" },
-  { name: "Automotive", country: "India", image: serviceImages[1], sourceUrl: "https://rohitsamaj.com/en-us/single-category/automotive/" },
-  { name: "Buffet", country: "India", image: serviceImages[2], sourceUrl: "https://rohitsamaj.com/en-us/single-category/buffet/" },
-  { name: "Cafe", country: "India", image: serviceImages[3], sourceUrl: "https://rohitsamaj.com/en-us/single-category/cafe/" },
-  { name: "Casual Dining", country: "India", image: serviceImages[4], sourceUrl: "https://rohitsamaj.com/en-us/single-category/casual-dining/" },
-  { name: "Commercial", country: "India", image: serviceImages[5], sourceUrl: "https://rohitsamaj.com/en-us/single-category/commercial/" },
-  { name: "Coworking", country: "India", image: serviceImages[6], sourceUrl: "https://rohitsamaj.com/en-us/single-category/coworking/" },
-  { name: "Culture", country: "India", image: serviceImages[7], sourceUrl: "https://rohitsamaj.com/en-us/single-category/culture/" },
-  { name: "Education", country: "India", image: serviceImages[8], sourceUrl: "https://rohitsamaj.com/en-us/single-category/education/" },
-  { name: "Electronics", country: "India", image: serviceImages[9], sourceUrl: "https://rohitsamaj.com/en-us/single-category/electronics/" },
-  { name: "Family House", country: "India", image: serviceImages[10], sourceUrl: "https://rohitsamaj.com/en-us/single-category/family-house/" },
-  { name: "Fast Food", country: "India", image: serviceImages[11], sourceUrl: "https://rohitsamaj.com/en-us/single-category/fast-food/" },
-  { name: "Fine Dining", country: "India", image: serviceImages[12], sourceUrl: "https://rohitsamaj.com/en-us/single-category/fine-dining/" },
-  { name: "Food", country: "India", image: serviceImages[13], sourceUrl: "https://rohitsamaj.com/en-us/single-category/food/" },
-  { name: "Gym & Fitness", country: "India", image: serviceImages[14], sourceUrl: "https://rohitsamaj.com/en-us/single-category/gym-fitness/" },
-  { name: "Health & Beauty", country: "India", image: serviceImages[15], sourceUrl: "https://rohitsamaj.com/en-us/single-category/health-beauty/" },
-  { name: "Homes", country: "India", image: serviceImages[16], sourceUrl: "https://rohitsamaj.com/en-us/single-category/homes/" },
-  { name: "Hotels", country: "India", image: serviceImages[17], sourceUrl: "https://rohitsamaj.com/en-us/single-category/hotels/" },
-  { name: "Office", country: "India", image: serviceImages[18], sourceUrl: "https://rohitsamaj.com/en-us/single-category/office/" },
-  { name: "Outdoor Activities", country: "India", image: serviceImages[19], sourceUrl: "https://rohitsamaj.com/en-us/single-category/outdoor-activities/" },
-  { name: "Place", country: "India", image: serviceImages[20], sourceUrl: "https://rohitsamaj.com/en-us/single-category/place/" },
-  { name: "Property", country: "India", image: serviceImages[21], sourceUrl: "https://rohitsamaj.com/en-us/single-category/property/" },
-  { name: "Residential", country: "India", image: serviceImages[22], sourceUrl: "https://rohitsamaj.com/en-us/single-category/residential/" },
-  { name: "Salon", country: "India", image: serviceImages[23], sourceUrl: "https://rohitsamaj.com/en-us/single-category/salon/" },
-  { name: "Shopping", country: "India", image: serviceImages[24], sourceUrl: "https://rohitsamaj.com/en-us/single-category/shopping/" },
-  { name: "Tour", country: "India", image: serviceImages[25], sourceUrl: "https://rohitsamaj.com/en-us/single-category/tour/" },
-  { name: "Town House", country: "India", image: serviceImages[26], sourceUrl: "https://rohitsamaj.com/en-us/single-category/town-house/" },
-  { name: "Apartment", country: "UK", image: ukServiceImages[0], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=apartment-uk&directory_type" },
-  { name: "Buffet", country: "UK", image: ukServiceImages[1], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=buffet-uk&directory_type" },
-  { name: "Business", country: "UK", image: ukServiceImages[2], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=business-uk&directory_type" },
-  { name: "Cafe", country: "UK", image: ukServiceImages[3], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=cafe-uk&directory_type" },
-  { name: "Casual Dining", country: "UK", image: ukServiceImages[4], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=casual-dining-uk&directory_type" },
-  { name: "Commercial", country: "UK", image: ukServiceImages[5], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=commercial-uk&directory_type" },
-  { name: "Coworking", country: "UK", image: ukServiceImages[6], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=coworking-uk&directory_type" },
-  { name: "Culture", country: "UK", image: ukServiceImages[7], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=culture-uk&directory_type" },
-  { name: "Education", country: "UK", image: ukServiceImages[8], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=education-uk&directory_type" },
-  { name: "Electronics", country: "UK", image: ukServiceImages[9], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=electronics-uk&directory_type" },
-  { name: "Family House", country: "UK", image: ukServiceImages[10], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=family-house-uk&directory_type" },
-  { name: "Fast Food", country: "UK", image: ukServiceImages[11], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=fast-food-uk&directory_type" },
-  { name: "Fine Dining", country: "UK", image: ukServiceImages[12], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=fine-dining-uk&directory_type" },
-  { name: "Food", country: "UK", image: ukServiceImages[13], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=food-uk&directory_type" },
-  { name: "Gym & Fitness", country: "UK", image: ukServiceImages[14], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=gym-fitness-uk&directory_type" },
-  { name: "Health & Beauty", country: "UK", image: ukServiceImages[15], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=health-beauty-uk&directory_type" },
-  { name: "Homes", country: "UK", image: ukServiceImages[16], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=homes-uk&directory_type" },
-  { name: "Hotels", country: "UK", image: ukServiceImages[17], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=hotels-uk&directory_type" },
-  { name: "IT Services", country: "UK", image: ukServiceImages[18], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=it-services-en-uk&directory_type" },
-  { name: "Office", country: "UK", image: ukServiceImages[19], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=office-uk&directory_type" },
-  { name: "Outdoor Activities", country: "UK", image: ukServiceImages[20], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=outdoor-activities-uk&directory_type" },
-  { name: "Place", country: "UK", image: ukServiceImages[21], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=place-uk&directory_type" },
-  { name: "Property", country: "UK", image: ukServiceImages[22], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=property-uk&directory_type" },
-  { name: "Residential", country: "UK", image: ukServiceImages[23], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=residential-uk&directory_type" },
-  { name: "Salon", country: "UK", image: ukServiceImages[24], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=salon-uk&directory_type" },
-  { name: "Shopping", country: "UK", image: ukServiceImages[25], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=shopping-uk&directory_type" },
-  { name: "Tour", country: "UK", image: ukServiceImages[26], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=tour-uk&directory_type" },
-  { name: "Town House", country: "UK", image: ukServiceImages[27], sourceUrl: "https://rohitsamaj.com/en-uk/single-category-uk/?category=town-house-uk&directory_type" },
- ];
-export const listings = [
-  { id: 1, name: 'Shree Sai Survey', category: 'Automotive', country: 'India', city: 'Surat', image: '/images/survey.png', rating: 5, reviews: 1, phone: '09825541011', address: '308 Lalbhai Contractor Complex, Nanpura, Surat, India', description: 'Shree Sai Survey is a professional surveying and geospatial services company committed to delivering accurate, reliable, and cost-effective survey solutions.', serviceDetails: ['Topographical and contour surveys', 'Demarcation surveys and layout design', 'Industrial and landscape surveys', 'Road development and alignment surveys'], sourceUrl: 'https://rohitsamaj.com/en-us/directory/business/shree-sai-survey/' },
-  { id: 2, name: 'Arun Parmar', category: 'Handy Man', country: 'UK', city: 'Leicester', image: '/images/handy.png', rating: null, reviews: 0, phone: '07989153562', address: 'City of Leicester, England, United Kingdom', description: 'Arun Parmar provides reliable and affordable handyman services for residential and commercial properties.', serviceDetails: ['General maintenance and house work', 'Painting and decorating', 'Electrical work', 'Plumbing'], sourceUrl: 'https://rohitsamaj.com/en-uk/directory/business-uk/arun-parmar/' },
-  { id: 3, name: 'J.Y. School of Motoring', category: 'Autommotor', country: 'UK', city: 'United Kingdom', image: '/images/car.png', rating: null, reviews: 0, phone: '07894543199', address: 'United Kingdom', description: 'J.Y. School of Motoring is committed to providing high-quality driving instruction for learners of all experience levels.', serviceDetails: ['Beginner and advanced driving lessons', 'Refresher driving courses', 'Defensive driving techniques', 'Test preparation and motorway driving lessons'], sourceUrl: 'https://rohitsamaj.com/en-uk/directory/business-uk/j-y-school-of-motoring/' },
-  { id: 4, name: 'VM IT Solution', category: 'IT Services', country: 'UK', city: 'United Kingdom', image: '/images/it.png', rating: null, reviews: 0, phone: '', address: 'United Kingdom', description: 'VM IT Solution is a technology services company dedicated to delivering innovative, reliable, and cost-effective IT solutions.', serviceDetails: ['Software, website and mobile application development', 'Cloud solutions and IT consulting', 'Network setup and management', 'Cybersecurity and technical maintenance'], sourceUrl: 'https://rohitsamaj.com/en-uk/directory/business-uk/vm-it-solution/' },
-] satisfies Array<{ id: number; name: string; category: string; country: string; city: string; image: string; rating: number | null; reviews: number; phone: string; address: string; description: string; serviceDetails: string[]; sourceUrl: string }>;
-export type Listing = typeof listings[number];
-export function filterListings(country: string, category: string, query: string, city: string) {
-  return listings.filter(item => item.country === country && (category === 'All' || item.category === category) && (city === 'All locations' || item.city === city) && `${item.name} ${item.category} ${item.city} ${item.description} ${item.serviceDetails.join(' ')}`.toLowerCase().includes(query.toLowerCase()));
+export type Service = (typeof services)[number];
+
+export type Listing = {
+  id: string;
+  name: string;
+  slug: string;
+  category: string;
+  directoryType: DirectoryType;
+  country: Country;
+  city: string;
+  image: string;
+  rating: number | null;
+  reviews: number;
+  phone: string;
+  phoneHref: string;
+  address: string;
+  description: string;
+  serviceDetails: string[];
+  sourceUrl: string;
+  featured: boolean;
+  listedAt: string | null;
+};
+
+function phoneHref(phone: string, country: Country) {
+  const digits = phone.replace(/\D/g, "");
+  if (!digits) return "";
+  const local = digits.replace(/^0/, "");
+  return country === "India" ? `tel:+91${local}` : `tel:+44${local}`;
+}
+
+export function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+function listing(input: Omit<Listing, "slug" | "phoneHref"> & { phone: string }): Listing {
+  return { ...input, slug: slugify(input.name), phoneHref: phoneHref(input.phone, input.country) };
+}
+
+export const listings: Listing[] = [
+  listing({
+    id: "shree-sai-survey",
+    name: "Shree Sai Survey",
+    category: "Automotive",
+    directoryType: "Business",
+    country: "India",
+    city: "Surat",
+    image: siteImage("survey.png"),
+    rating: 5,
+    reviews: 1,
+    phone: "09825541011",
+    address: "308 Lalbhai Contractor Complex, Nanpura, Surat, India",
+    description:
+      "Shree Sai Survey is a professional surveying and geospatial services company committed to delivering accurate, reliable, and cost-effective survey solutions.",
+    serviceDetails: [
+      "Topographical and contour surveys",
+      "Demarcation surveys and layout design",
+      "Industrial and landscape surveys",
+      "Road development and alignment surveys",
+    ],
+    sourceUrl: "https://rohitsamaj.com/en-us/directory/business/shree-sai-survey/",
+    featured: true,
+    listedAt: "2026-05-13",
+  }),
+  listing({
+    id: "arun-parmar",
+    name: "Arun Parmar",
+    category: "Handy Man",
+    directoryType: "Business",
+    country: "UK",
+    city: "Leicester",
+    image: siteImage("handy.png"),
+    rating: null,
+    reviews: 0,
+    phone: "07989153562",
+    address: "City of Leicester, England, United Kingdom",
+    description: "Arun Parmar provides reliable and affordable handyman services for residential and commercial properties.",
+    serviceDetails: ["General maintenance and house work", "Painting and decorating", "Electrical work", "Plumbing"],
+    sourceUrl: "https://rohitsamaj.com/en-uk/directory/business-uk/arun-parmar/",
+    featured: false,
+    listedAt: null,
+  }),
+  listing({
+    id: "jy-school-of-motoring",
+    name: "J.Y. School of Motoring",
+    category: "Autommotor",
+    directoryType: "Business",
+    country: "UK",
+    city: "United Kingdom",
+    image: siteImage("car.png"),
+    rating: null,
+    reviews: 0,
+    phone: "07894543199",
+    address: "United Kingdom",
+    description: "J.Y. School of Motoring is committed to providing high-quality driving instruction for learners of all experience levels.",
+    serviceDetails: [
+      "Beginner and advanced driving lessons",
+      "Refresher driving courses",
+      "Defensive driving techniques",
+      "Test preparation and motorway driving lessons",
+    ],
+    sourceUrl: "https://rohitsamaj.com/en-uk/directory/business-uk/j-y-school-of-motoring/",
+    featured: false,
+    listedAt: null,
+  }),
+  listing({
+    id: "vm-it-solution",
+    name: "VM IT Solution",
+    category: "IT Services",
+    directoryType: "Business",
+    country: "UK",
+    city: "United Kingdom",
+    image: siteImage("it.png"),
+    rating: null,
+    reviews: 0,
+    phone: "",
+    address: "United Kingdom",
+    description: "VM IT Solution is a technology services company dedicated to delivering innovative, reliable, and cost-effective IT solutions.",
+    serviceDetails: [
+      "Software, website and mobile application development",
+      "Cloud solutions and IT consulting",
+      "Network setup and management",
+      "Cybersecurity and technical maintenance",
+    ],
+    sourceUrl: "https://rohitsamaj.com/en-uk/directory/business-uk/vm-it-solution/",
+    featured: false,
+    listedAt: null,
+  }),
+];
+
+export function countryPath(country: Country) {
+  return country === "India" ? "/india" : "/uk";
+}
+
+export function categoryPath(country: Country, name: string) {
+  return `${countryPath(country)}/category/${slugify(name)}`;
+}
+
+export function listingPath(country: Country, slug: string) {
+  return `${countryPath(country)}/listing/${slug}`;
+}
+
+export function categoriesFor(country: Country) {
+  return services.filter((item) => item.country === country);
+}
+
+export function getCategory(country: Country, slug: string) {
+  return categoriesFor(country).find((item) => slugify(item.name) === slug);
+}
+
+export function getListing(country: Country, slug: string, source: Listing[] = listings) {
+  return source.find((item) => item.country === country && item.slug === slug);
+}
+
+export function citiesFor(country: Country, source: Listing[] = listings) {
+  return [...new Set(source.filter((item) => item.country === country).map((item) => item.city))].sort();
+}
+
+export function listingCount(country: Country, category: string, source: Listing[] = listings) {
+  return source.filter((item) => item.country === country && item.category === category).length;
+}
+
+export function parseDirectorySearch(search: Record<string, unknown>): DirectorySearch {
+  const sortValue = search["sort"];
+  const sort = sortOptions.some((item) => item.value === sortValue) ? (sortValue as SortValue) : "featured";
+  const query = search["q"];
+  const city = search["city"];
+  const type = search["type"];
+  return {
+    q: typeof query === "string" ? query : "",
+    city: typeof city === "string" && city ? city : "All locations",
+    type: typeof type === "string" && type ? type : "All",
+    sort,
+  };
+}
+
+export function filterListings(
+  country: string,
+  category: string,
+  query: string,
+  city: string,
+  directoryType = "All",
+  source: Listing[] = listings,
+) {
+  const needle = query.trim().toLowerCase();
+  return source.filter((item) => {
+    if (item.country !== country) return false;
+    if (category !== "All" && item.category !== category) return false;
+    if (city !== "All locations" && item.city !== city) return false;
+    if (directoryType !== "All" && item.directoryType !== directoryType) return false;
+    if (!needle) return true;
+    const haystack = `${item.name} ${item.category} ${item.city} ${item.description} ${item.serviceDetails.join(" ")}`.toLowerCase();
+    return haystack.includes(needle);
+  });
+}
+
+export function sortListings(items: Listing[], sort: SortValue) {
+  const copy = [...items];
+  if (sort === "name-asc") return copy.sort((a, b) => a.name.localeCompare(b.name));
+  if (sort === "name-desc") return copy.sort((a, b) => b.name.localeCompare(a.name));
+  if (sort === "newest") {
+    return copy.sort((a, b) => {
+      if (a.listedAt && b.listedAt) return b.listedAt.localeCompare(a.listedAt);
+      if (a.listedAt) return -1;
+      if (b.listedAt) return 1;
+      return a.name.localeCompare(b.name);
+    });
+  }
+  if (sort === "oldest") {
+    return copy.sort((a, b) => {
+      if (a.listedAt && b.listedAt) return a.listedAt.localeCompare(b.listedAt);
+      if (a.listedAt) return -1;
+      if (b.listedAt) return 1;
+      return a.name.localeCompare(b.name);
+    });
+  }
+  return copy.sort((a, b) => Number(b.featured) - Number(a.featured) || a.name.localeCompare(b.name));
+}
+
+export function emptyListingMessage(category: string, query: string, directoryType: string) {
+  if (!query.trim() && category !== "All") return `No businesses in ${category} yet.`;
+  if (!query.trim() && directoryType !== "All") return `No ${directoryType.toLowerCase()} listings yet.`;
+  return "No listings match your search.";
 }

@@ -11,6 +11,7 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import { defaultDirectorySearch } from "@/lib/directory-content";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
@@ -24,7 +25,8 @@ function NotFoundComponent() {
         </p>
         <div className="mt-6">
           <Link
-            to="/"
+            to="/india"
+            search={defaultDirectorySearch}
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
             Go home
@@ -78,13 +80,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Rohit Samaj — Your Local Community" },
-      { name: "description", content: "Discover local businesses and connect with your community through Rohit Samaj." },
-      { name: "author", content: "Rohit Samaj" },
-      { property: "og:title", content: "Rohit Samaj — Your Local Community" },
-      { property: "og:description", content: "Local discoveries and real connections across India and the UK." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
+      { title: "Rohit Samaj" },
+      { name: "description", content: "Rohit Samaj is a local business directory for India and the United Kingdom." },
     ],
     links: [
       {
