@@ -1,9 +1,4 @@
-# Homehaven Style Explorer
-
-https://rohitsamaj.com/en-us/home-in/
-
-this is the website that i want to redesign and redevelop a new website , provide me 2-3 samples of this website with a new design
-
+# Rohit Samaj Website 
 ## Design
 
 - Live site: [Home India](https://rohitsamaj.com/en-us/home-in/)
