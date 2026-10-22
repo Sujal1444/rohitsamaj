@@ -59,7 +59,7 @@ const indiaCategories = [
 
 const ukCategories = [
   ["Apartment", "uk-apartment.jpg"],
-  ["Autommotor", "car.png"],
+  ["Driving School", "car.png"],
   ["Buffet", "uk-buffet.jpg"],
   ["Business", "uk-business.jpg"],
   ["Cafe", "uk-cafe.jpg"],
@@ -199,11 +199,11 @@ export const listings: Listing[] = [
   listing({
     id: "jy-school-of-motoring",
     name: "J.Y. School of Motoring",
-    category: "Autommotor",
+    category: "Driving School",
     directoryType: "Business",
     country: "UK",
     city: "United Kingdom",
-    image: siteImage("car.png"),
+    image: siteImage("jy-school-of-motoring.jpeg"),
     rating: null,
     reviews: 0,
     phone: "07894543199",
@@ -338,3 +338,4 @@ export function emptyListingMessage(category: string, query: string, directoryTy
   if (!query.trim() && directoryType !== "All") return `No ${directoryType.toLowerCase()} listings yet.`;
   return "No listings match your search.";
 }
+
