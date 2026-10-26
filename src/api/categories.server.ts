@@ -13,7 +13,7 @@ function toService(doc: CategoryDoc): Service & { id: string; groupIds: string[]
     image: doc.image,
     sourceUrl: doc.sourceUrl,
     groupIds: doc.groupIds,
-  };
+  } as Service & { id: string; groupIds: string[] };
 }
 
 async function ensureSeeded() {
@@ -41,7 +41,7 @@ export async function adminListCategories(country?: Country) {
 }
 
 export async function adminSaveCategory(data: {
-  id?: string;
+  id?: string | undefined;
   name: string;
   country: Country;
   image: string;

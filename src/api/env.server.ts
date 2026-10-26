@@ -18,11 +18,11 @@ export function getEnv() {
     adminName: required("ADMIN_NAME", "Admin"),
     appUrl: required("APP_URL", "http://localhost:8080"),
     smtp: {
-      host: process.env.SMTP_HOST ?? "",
-      port: Number(process.env.SMTP_PORT ?? "587"),
-      user: process.env.SMTP_USER ?? "",
-      pass: process.env.SMTP_PASS ?? "",
-      from: process.env.SMTP_FROM ?? "noreply@rohitsamaj.com",
+      host: process.env["SMTP_HOST"] ?? "",
+      port: Number(process.env["SMTP_PORT"] ?? "587"),
+      user: process.env["SMTP_USER"] ?? "",
+      pass: process.env["SMTP_PASS"] ?? "",
+      from: process.env["SMTP_FROM"] ?? "noreply@rohitsamaj.com",
     },
   };
 }

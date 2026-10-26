@@ -58,9 +58,9 @@ export async function adminCreateUser(data: {
 
 export async function adminUpdateUser(data: {
   id: string;
-  role?: UserRole;
-  status?: UserStatus;
-  name?: string;
+  role?: UserRole | undefined;
+  status?: UserStatus | undefined;
+  name?: string | undefined;
 }) {
   await requireAdmin();
   const users = await usersCollection();

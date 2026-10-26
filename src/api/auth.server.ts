@@ -52,7 +52,7 @@ async function createSession(userId: ObjectId) {
     httpOnly: true,
     sameSite: "lax",
     path: "/",
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env["NODE_ENV"] === "production",
     maxAge: SESSION_DAYS * 24 * 60 * 60,
   });
 }

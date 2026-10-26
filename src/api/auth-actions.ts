@@ -152,7 +152,7 @@ export const updateProfileFn = createServerFn({ method: "POST" })
       if (!data.currentPassword) return authError("PASSWORD_REQUIRED");
       const ok = await verifyPassword(data.currentPassword, user.passwordHash);
       if (!ok) return authError("INVALID_CREDENTIALS");
-      updates.passwordHash = await hashPassword(data.newPassword);
+      updates["passwordHash"] = await hashPassword(data.newPassword);
     }
 
     await users.updateOne({ _id: user._id }, { $set: updates });

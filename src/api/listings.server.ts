@@ -50,7 +50,7 @@ export async function getPublishedListings(country?: Country) {
   await ensureSeeded();
   const col = await listingsCollection();
   const query: Record<string, unknown> = { status: "published" };
-  if (country) query.country = country;
+  if (country) query["country"] = country;
   const docs = await col.find(query).sort({ featured: -1, name: 1 }).toArray();
   return docs.map(toListing);
 }
@@ -110,23 +110,23 @@ export async function submitListing(data: {
 }
 
 export async function adminListListings(data: {
-  country?: Country;
-  status?: ListingStatus;
-  q?: string;
+  country?: Country | undefined;
+  status?: ListingStatus | undefined;
+  q?: string | undefined;
 }) {
   await requireAdmin();
   await ensureSeeded();
   const col = await listingsCollection();
   const query: Record<string, unknown> = {};
-  if (data.country) query.country = data.country;
-  if (data.status) query.status = data.status;
-  if (data.q?.trim()) query.name = { $regex: data.q.trim(), $options: "i" };
+  if (data.country) query["country"] = data.country;
+  if (data.status) query["status"] = data.status;
+  if (data.q?.trim()) query["name"] = { $regex: data.q.trim(), $options: "i" };
   const docs = await col.find(query).sort({ updatedAt: -1 }).toArray();
   return docs.map(toListing);
 }
 
 export async function adminSaveListing(data: {
-  id?: string;
+  id?: string | undefined;
   name: string;
   category: string;
   directoryType: DirectoryType;
@@ -137,9 +137,9 @@ export async function adminSaveListing(data: {
   address: string;
   description: string;
   serviceDetails: string[];
-  featured?: boolean;
-  status?: ListingStatus;
-  listedAt?: string | null;
+  featured?: boolean | undefined;
+  status?: ListingStatus | undefined;
+  listedAt?: string | null | undefined;
 }) {
   await requireAdmin();
   await ensureSeeded();
