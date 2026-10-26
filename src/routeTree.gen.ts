@@ -13,12 +13,23 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as AddListingRouteImport } from './routes/add-listing'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as IndiaRouteImport } from './routes/india'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as UkRouteImport } from './routes/uk'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminCategoriesRouteImport } from './routes/admin/categories'
+import { Route as AdminListingsRouteImport } from './routes/admin/listings'
+import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as IndiaIndexRouteImport } from './routes/india/index'
+import { Route as IndiaListingsRouteImport } from './routes/india/listings'
 import { Route as UkIndexRouteImport } from './routes/uk/index'
+import { Route as UkListingsRouteImport } from './routes/uk/listings'
 import { Route as IndiaCategorySlugRouteImport } from './routes/india/category/$slug'
 import { Route as IndiaListingSlugRouteImport } from './routes/india/listing/$slug'
 import { Route as UkCategorySlugRouteImport } from './routes/uk/category/$slug'
@@ -44,14 +55,39 @@ const AddListingRoute = AddListingRouteImport.update({
   path: '/add-listing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndiaRoute = IndiaRouteImport.update({
   id: '/india',
   path: '/india',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -64,14 +100,44 @@ const UkRoute = UkRouteImport.update({
   path: '/uk',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminListingsRoute = AdminListingsRouteImport.update({
+  id: '/listings',
+  path: '/listings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
 const IndiaIndexRoute = IndiaIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => IndiaRoute,
 } as any)
+const IndiaListingsRoute = IndiaListingsRouteImport.update({
+  id: '/listings',
+  path: '/listings',
+  getParentRoute: () => IndiaRoute,
+} as any)
 const UkIndexRoute = UkIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => UkRoute,
+} as any)
+const UkListingsRoute = UkListingsRouteImport.update({
+  id: '/listings',
+  path: '/listings',
   getParentRoute: () => UkRoute,
 } as any)
 const IndiaCategorySlugRoute = IndiaCategorySlugRouteImport.update({
@@ -100,10 +166,21 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
   '/add-listing': typeof AddListingRoute
+  '/admin': typeof AdminRouteWithChildren
   '/contact': typeof ContactRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/india': typeof IndiaRouteWithChildren
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/uk': typeof UkRouteWithChildren
+  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/listings': typeof AdminListingsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/india/listings': typeof IndiaListingsRoute
+  '/uk/listings': typeof UkListingsRoute
+  '/admin/': typeof AdminIndexRoute
   '/india/': typeof IndiaIndexRoute
   '/uk/': typeof UkIndexRoute
   '/india/category/$slug': typeof IndiaCategorySlugRoute
@@ -117,7 +194,17 @@ export interface FileRoutesByTo {
   '/account': typeof AccountRoute
   '/add-listing': typeof AddListingRoute
   '/contact': typeof ContactRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/listings': typeof AdminListingsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/india/listings': typeof IndiaListingsRoute
+  '/uk/listings': typeof UkListingsRoute
+  '/admin': typeof AdminIndexRoute
   '/india': typeof IndiaIndexRoute
   '/uk': typeof UkIndexRoute
   '/india/category/$slug': typeof IndiaCategorySlugRoute
@@ -131,10 +218,21 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
   '/add-listing': typeof AddListingRoute
+  '/admin': typeof AdminRouteWithChildren
   '/contact': typeof ContactRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/india': typeof IndiaRouteWithChildren
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/uk': typeof UkRouteWithChildren
+  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/listings': typeof AdminListingsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/india/listings': typeof IndiaListingsRoute
+  '/uk/listings': typeof UkListingsRoute
+  '/admin/': typeof AdminIndexRoute
   '/india/': typeof IndiaIndexRoute
   '/uk/': typeof UkIndexRoute
   '/india/category/$slug': typeof IndiaCategorySlugRoute
@@ -149,10 +247,21 @@ export interface FileRouteTypes {
     | '/about'
     | '/account'
     | '/add-listing'
+    | '/admin'
     | '/contact'
+    | '/forgot-password'
     | '/india'
+    | '/login'
+    | '/register'
+    | '/reset-password'
     | '/sitemap.xml'
     | '/uk'
+    | '/admin/categories'
+    | '/admin/listings'
+    | '/admin/users'
+    | '/india/listings'
+    | '/uk/listings'
+    | '/admin/'
     | '/india/'
     | '/uk/'
     | '/india/category/$slug'
@@ -166,7 +275,17 @@ export interface FileRouteTypes {
     | '/account'
     | '/add-listing'
     | '/contact'
+    | '/forgot-password'
+    | '/login'
+    | '/register'
+    | '/reset-password'
     | '/sitemap.xml'
+    | '/admin/categories'
+    | '/admin/listings'
+    | '/admin/users'
+    | '/india/listings'
+    | '/uk/listings'
+    | '/admin'
     | '/india'
     | '/uk'
     | '/india/category/$slug'
@@ -179,10 +298,21 @@ export interface FileRouteTypes {
     | '/about'
     | '/account'
     | '/add-listing'
+    | '/admin'
     | '/contact'
+    | '/forgot-password'
     | '/india'
+    | '/login'
+    | '/register'
+    | '/reset-password'
     | '/sitemap.xml'
     | '/uk'
+    | '/admin/categories'
+    | '/admin/listings'
+    | '/admin/users'
+    | '/india/listings'
+    | '/uk/listings'
+    | '/admin/'
     | '/india/'
     | '/uk/'
     | '/india/category/$slug'
@@ -196,8 +326,13 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AccountRoute: typeof AccountRoute
   AddListingRoute: typeof AddListingRoute
+  AdminRoute: typeof AdminRouteWithChildren
   ContactRoute: typeof ContactRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   IndiaRoute: typeof IndiaRouteWithChildren
+  LoginRoute: typeof LoginRoute
+  RegisterRoute: typeof RegisterRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   UkRoute: typeof UkRouteWithChildren
 }
@@ -232,6 +367,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AddListingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -239,11 +381,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/india': {
       id: '/india'
       path: '/india'
       fullPath: '/india'
       preLoaderRoute: typeof IndiaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -260,6 +430,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UkRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/categories': {
+      id: '/admin/categories'
+      path: '/categories'
+      fullPath: '/admin/categories'
+      preLoaderRoute: typeof AdminCategoriesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/listings': {
+      id: '/admin/listings'
+      path: '/listings'
+      fullPath: '/admin/listings'
+      preLoaderRoute: typeof AdminListingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/india/': {
       id: '/india/'
       path: '/'
@@ -267,11 +465,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndiaIndexRouteImport
       parentRoute: typeof IndiaRoute
     }
+    '/india/listings': {
+      id: '/india/listings'
+      path: '/listings'
+      fullPath: '/india/listings'
+      preLoaderRoute: typeof IndiaListingsRouteImport
+      parentRoute: typeof IndiaRoute
+    }
     '/uk/': {
       id: '/uk/'
       path: '/'
       fullPath: '/uk/'
       preLoaderRoute: typeof UkIndexRouteImport
+      parentRoute: typeof UkRoute
+    }
+    '/uk/listings': {
+      id: '/uk/listings'
+      path: '/listings'
+      fullPath: '/uk/listings'
+      preLoaderRoute: typeof UkListingsRouteImport
       parentRoute: typeof UkRoute
     }
     '/india/category/$slug': {
@@ -305,13 +517,31 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteChildren {
+  AdminCategoriesRoute: typeof AdminCategoriesRoute
+  AdminListingsRoute: typeof AdminListingsRoute
+  AdminUsersRoute: typeof AdminUsersRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminCategoriesRoute: AdminCategoriesRoute,
+  AdminListingsRoute: AdminListingsRoute,
+  AdminUsersRoute: AdminUsersRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 interface IndiaRouteChildren {
+  IndiaListingsRoute: typeof IndiaListingsRoute
   IndiaIndexRoute: typeof IndiaIndexRoute
   IndiaCategorySlugRoute: typeof IndiaCategorySlugRoute
   IndiaListingSlugRoute: typeof IndiaListingSlugRoute
 }
 
 const IndiaRouteChildren: IndiaRouteChildren = {
+  IndiaListingsRoute: IndiaListingsRoute,
   IndiaIndexRoute: IndiaIndexRoute,
   IndiaCategorySlugRoute: IndiaCategorySlugRoute,
   IndiaListingSlugRoute: IndiaListingSlugRoute,
@@ -320,12 +550,14 @@ const IndiaRouteChildren: IndiaRouteChildren = {
 const IndiaRouteWithChildren = IndiaRoute._addFileChildren(IndiaRouteChildren)
 
 interface UkRouteChildren {
+  UkListingsRoute: typeof UkListingsRoute
   UkIndexRoute: typeof UkIndexRoute
   UkCategorySlugRoute: typeof UkCategorySlugRoute
   UkListingSlugRoute: typeof UkListingSlugRoute
 }
 
 const UkRouteChildren: UkRouteChildren = {
+  UkListingsRoute: UkListingsRoute,
   UkIndexRoute: UkIndexRoute,
   UkCategorySlugRoute: UkCategorySlugRoute,
   UkListingSlugRoute: UkListingSlugRoute,
@@ -338,8 +570,13 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AccountRoute: AccountRoute,
   AddListingRoute: AddListingRoute,
+  AdminRoute: AdminRouteWithChildren,
   ContactRoute: ContactRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   IndiaRoute: IndiaRouteWithChildren,
+  LoginRoute: LoginRoute,
+  RegisterRoute: RegisterRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   UkRoute: UkRouteWithChildren,
 }

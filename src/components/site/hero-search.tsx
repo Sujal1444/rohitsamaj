@@ -62,6 +62,7 @@ export function HeroSearch({
   search,
   listings,
   onSearchChange,
+  onSearchSubmit,
   onReset,
 }: {
   country: Country;
@@ -69,6 +70,7 @@ export function HeroSearch({
   search: DirectorySearch;
   listings: Listing[];
   onSearchChange: (next: DirectorySearch) => void;
+  onSearchSubmit: (next: DirectorySearch) => void;
   onReset: () => void;
 }) {
   const cities = citiesFor(country, listings);
@@ -78,24 +80,21 @@ export function HeroSearch({
       ? "Find local businesses in the UK."
       : "Find local businesses in India.";
 
-  function applyFromForm(form: HTMLFormElement) {
+  function readForm(form: HTMLFormElement): DirectorySearch {
     const data = new FormData(form);
     const sortValue = String(data.get("sort") ?? search.sort);
     const sort = sortOptions.some((item) => item.value === sortValue) ? (sortValue as SortValue) : "featured";
-    onSearchChange({
+    return {
       q: String(data.get("q") ?? "").trim(),
       city: String(data.get("city") ?? "All locations") || "All locations",
       type: String(data.get("type") ?? "All") || "All",
       sort,
-    });
+    };
   }
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    applyFromForm(event.currentTarget);
-    requestAnimationFrame(() => {
-      document.getElementById("listings-title")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
+    onSearchSubmit(readForm(event.currentTarget));
   }
 
   return (
@@ -121,6 +120,7 @@ export function HeroSearch({
           Discover businesses, services, and places across {country === "UK" ? "the United Kingdom" : "India"}.
         </p>
         <form
+          method="get"
           className="grid w-full gap-3 rounded-xl bg-white p-3 text-foreground shadow-lg md:grid-cols-[minmax(0,1.6fr)_minmax(12rem,1fr)_minmax(12rem,1fr)_10rem] md:items-stretch"
           onSubmit={onSubmit}
         >
@@ -153,7 +153,7 @@ export function HeroSearch({
           <input type="hidden" name="sort" value={search.sort} />
           <button
             type="submit"
-            className="flex min-h-[4.75rem] items-center justify-center rounded-lg bg-brand px-6 text-sm leading-5 font-medium text-white hover:text-white md:h-full md:min-h-0"
+            className="flex min-h-[4.75rem] cursor-pointer items-center justify-center rounded-lg bg-brand px-6 text-sm leading-5 font-medium text-white hover:text-white md:h-full md:min-h-0"
           >
             Search
           </button>
@@ -171,7 +171,7 @@ export function HeroSearch({
               </option>
             ))}
           </SelectField>
-          <button type="button" className="mb-1 text-sm text-white underline underline-offset-4" onClick={onReset}>
+          <button type="button" className="mb-1 cursor-pointer text-sm text-white underline underline-offset-4" onClick={onReset}>
             View all listings
           </button>
         </div>

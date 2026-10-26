@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { DirectoryView } from "@/components/site/directory-view";
 import { JsonLd } from "@/components/site/json-ld";
-import { listings } from "@/lib/directory-content";
 import { absoluteUrl, pageHead } from "@/lib/site";
+import { fetchCategoriesFn } from "@/api/categories";
+import { fetchPublishedListingsFn } from "@/api/listings";
 
 export const Route = createFileRoute("/india/")({
   head: () =>
@@ -11,11 +12,18 @@ export const Route = createFileRoute("/india/")({
       description: "Search local businesses, services, and places across India with Rohit Samaj.",
       path: "/india",
     }),
+  loader: async () => {
+    const [listings, categories] = await Promise.all([
+      fetchPublishedListingsFn({ data: { country: "India" } }),
+      fetchCategoriesFn({ data: { country: "India" } }),
+    ]);
+    return { listings, categories };
+  },
   component: IndiaPage,
 });
 
 function IndiaPage() {
-  const items = listings.filter((item) => item.country === "India");
+  const { listings, categories } = Route.useLoaderData();
   return (
     <>
       <JsonLd
@@ -23,7 +31,7 @@ function IndiaPage() {
           "@context": "https://schema.org",
           "@type": "ItemList",
           name: "Listings in India",
-          itemListElement: items.map((item, index) => ({
+          itemListElement: listings.map((item, index) => ({
             "@type": "ListItem",
             position: index + 1,
             url: absoluteUrl(`/india/listing/${item.slug}`),
@@ -31,7 +39,7 @@ function IndiaPage() {
           })),
         }}
       />
-      <DirectoryView country="India" />
+      <DirectoryView country="India" listings={listings} categories={categories} />
     </>
   );
 }

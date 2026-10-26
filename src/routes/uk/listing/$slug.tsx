@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ListingDetails } from "@/components/site/listing-details";
-import { getListing } from "@/lib/directory-content";
 import { pageHead } from "@/lib/site";
+import { fetchListingFn } from "@/api/listings";
 
 export const Route = createFileRoute("/uk/listing/$slug")({
-  loader: ({ params }) => ({ listing: getListing("UK", params.slug) ?? null }),
+  loader: async ({ params }) => ({ listing: await fetchListingFn({ data: { country: "UK", slug: params.slug } }) }),
   head: ({ loaderData, params }) => {
     const listing = loaderData?.listing;
     return pageHead({

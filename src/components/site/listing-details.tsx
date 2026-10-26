@@ -1,17 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import { MapPin, Phone, Star } from "lucide-react";
-import { useEffect, useState } from "react";
-import { getListing, slugify, type Country, type Listing } from "@/lib/directory-content";
-import { readSubmissions } from "@/lib/directory-storage";
+import { slugify, type Country, type Listing } from "@/lib/directory-content";
 import { absoluteUrl } from "@/lib/site";
 import { JsonLd } from "./json-ld";
 import { PageShell } from "./page-shell";
 
 export function ListingDetails({ country, slug, initial }: { country: Country; slug: string; initial: Listing | null }) {
-  const [listing, setListing] = useState(initial);
-  useEffect(() => {
-    if (!initial) setListing(getListing(country, slug, readSubmissions()) ?? null);
-  }, [country, initial, slug]);
+  const listing = initial;
 
   if (!listing) {
     return (
