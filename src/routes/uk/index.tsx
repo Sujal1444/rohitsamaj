@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { DirectoryView } from "@/components/site/directory-view";
 import { JsonLd } from "@/components/site/json-ld";
-import { listings } from "@/lib/directory-content";
 import { absoluteUrl, pageHead } from "@/lib/site";
+import { fetchCategoriesFn } from "@/api/categories";
+import { fetchPublishedListingsFn } from "@/api/listings";
 
 export const Route = createFileRoute("/uk/")({
   head: () =>
@@ -11,11 +12,18 @@ export const Route = createFileRoute("/uk/")({
       description: "Search local businesses, services, and places across the United Kingdom with Rohit Samaj.",
       path: "/uk",
     }),
+  loader: async () => {
+    const [listings, categories] = await Promise.all([
+      fetchPublishedListingsFn({ data: { country: "UK" } }),
+      fetchCategoriesFn({ data: { country: "UK" } }),
+    ]);
+    return { listings, categories };
+  },
   component: UkPage,
 });
 
 function UkPage() {
-  const items = listings.filter((item) => item.country === "UK");
+  const { listings, categories } = Route.useLoaderData();
   return (
     <>
       <JsonLd
@@ -23,7 +31,7 @@ function UkPage() {
           "@context": "https://schema.org",
           "@type": "ItemList",
           name: "Listings in the UK",
-          itemListElement: items.map((item, index) => ({
+          itemListElement: listings.map((item, index) => ({
             "@type": "ListItem",
             position: index + 1,
             url: absoluteUrl(`/uk/listing/${item.slug}`),
@@ -31,7 +39,7 @@ function UkPage() {
           })),
         }}
       />
-      <DirectoryView country="UK" />
+      <DirectoryView country="UK" listings={listings} categories={categories} />
     </>
   );
 }

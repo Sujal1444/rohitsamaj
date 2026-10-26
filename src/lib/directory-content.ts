@@ -1,6 +1,6 @@
-import { siteImage } from "./site-images";
+import { serviceAsset, siteImage } from "./site-images";
 
-export const countries = ["India", "UK"] as const;
+export const countries = ["UK", "India"] as const;
 export type Country = (typeof countries)[number];
 export const directoryTypes = ["Business", "Classified", "General", "Hotels", "Place", "Restaurant"] as const;
 export type DirectoryType = (typeof directoryTypes)[number];
@@ -58,37 +58,39 @@ const indiaCategories = [
 ] as const;
 
 const ukCategories = [
-  ["Apartment", "uk-apartment.jpg"],
+  ["Apartment", "apartment.jpg"],
   ["Driving School", "car.png"],
-  ["Buffet", "uk-buffet.jpg"],
-  ["Business", "uk-business.jpg"],
-  ["Cafe", "uk-cafe.jpg"],
-  ["Casual Dining", "uk-casual-dining.jpg"],
-  ["Commercial", "uk-commercial.jpg"],
-  ["Coworking", "uk-coworking.jpg"],
-  ["Culture", "uk-culture.jpg"],
-  ["Education", "uk-education.jpg"],
-  ["Electronics", "uk-electronics.jpg"],
-  ["Family House", "uk-family-house.jpg"],
-  ["Fast Food", "uk-fast-food.jpg"],
-  ["Fine Dining", "uk-fine-dining.jpg"],
-  ["Food", "uk-food.jpg"],
-  ["Gym & Fitness", "uk-gym-fitness.jpg"],
+  ["Buffet", "buffet.jpg"],
+  ["Business", "business.png"],
+  ["Cafe", "cafe.jpg"],
+  ["Casual Dining", "casual-dining.jpg"],
+  ["Commercial", "commercial.jpg"],
+  ["Coworking", "coworking.jpg"],
+  ["Culture", "culture.jpg"],
+  ["Education", "education.jpg"],
+  ["Electronics", "electronics.jpg"],
+  ["Family House", "family-house.jpg"],
+  ["Fast Food", "fast-food.jpg"],
+  ["Fine Dining", "fine-dining.jpg"],
+  ["Food", "food.jpg"],
+  ["Gym & Fitness", "gym-fitness.jpg"],
   ["Handy Man", "handy.png"],
-  ["Health & Beauty", "uk-health-beauty.jpg"],
-  ["Homes", "uk-homes.jpg"],
-  ["Hotels", "uk-hotels.jpg"],
-  ["IT Services", "uk-it-services.jpg"],
-  ["Office", "uk-office.jpg"],
-  ["Outdoor Activities", "uk-outdoor-activities.jpg"],
-  ["Place", "uk-place.jpg"],
-  ["Property", "uk-property.jpg"],
-  ["Residential", "uk-residential.jpg"],
-  ["Salon", "uk-salon.jpg"],
-  ["Shopping", "uk-shopping.jpg"],
-  ["Tour", "uk-tour.jpg"],
-  ["Town House", "uk-town-house.jpg"],
+  ["Health & Beauty", "health-beauty.jpg"],
+  ["Homes", "homes.jpg"],
+  ["Hotels", "hotels.jpg"],
+  ["IT Services", "it-services.jpg"],
+  ["Office", "office.jpg"],
+  ["Outdoor Activities", "outdoor-activities.jpg"],
+  ["Place", "place.jpg"],
+  ["Property", "property.jpg"],
+  ["Residential", "residential.jpg"],
+  ["Salon", "salon.jpg"],
+  ["Shopping", "shopping.jpg"],
+  ["Tour", "tour.jpg"],
+  ["Town House", "town-house.jpg"],
 ] as const;
+
+const ukLocalImageFiles = new Set(["car.png", "handy.png"]);
 
 function categorySource(country: Country, name: string) {
   const slug = slugify(name);
@@ -106,7 +108,7 @@ export const services = [
   ...ukCategories.map(([name, file]) => ({
     name,
     country: "UK" as const,
-    image: siteImage(file),
+    image: ukLocalImageFiles.has(file) ? siteImage(file) : serviceAsset(file),
     sourceUrl: categorySource("UK", name),
   })),
 ];
@@ -256,8 +258,51 @@ export function listingPath(country: Country, slug: string) {
   return `${countryPath(country)}/listing/${slug}`;
 }
 
+export const categoryGroups = [
+  {
+    id: "all",
+    label: "All",
+    categories: null,
+  },
+  {
+    id: "food",
+    label: "Food",
+    categories: ["Buffet", "Cafe", "Casual Dining", "Fast Food", "Fine Dining", "Food"],
+  },
+  {
+    id: "property",
+    label: "Property",
+    categories: ["Apartment", "Commercial", "Coworking", "Family House", "Homes", "Hotels", "Office", "Property", "Residential", "Town House"],
+  },
+  {
+    id: "services",
+    label: "Services",
+    categories: ["Automotive", "Business", "Driving School", "Education", "Electronics", "Handy Man", "IT Services"],
+  },
+  {
+    id: "lifestyle",
+    label: "Lifestyle",
+    categories: ["Culture", "Gym & Fitness", "Health & Beauty", "Outdoor Activities", "Place", "Salon", "Shopping", "Tour"],
+  },
+] as const;
+
+export type CategoryGroupId = (typeof categoryGroups)[number]["id"];
+
 export function categoriesFor(country: Country) {
   return services.filter((item) => item.country === country);
+}
+
+export function filterCategoriesByGroup(
+  categories: Array<Service & { groupIds?: string[] }>,
+  groupId: CategoryGroupId,
+) {
+  const group = categoryGroups.find((item) => item.id === groupId) ?? categoryGroups[0];
+  if (!group.categories) return categories;
+  const allowed = new Set<string>(group.categories);
+  return categories.filter((item) => {
+    if (item.groupIds?.length) return item.groupIds.includes(groupId);
+    return allowed.has(item.name);
+  });
 }
 
 export function getCategory(country: Country, slug: string) {
@@ -276,6 +321,14 @@ export function listingCount(country: Country, category: string, source: Listing
   return source.filter((item) => item.country === country && item.category === category).length;
 }
 
+export type DirectoryUrlSearch = {
+  q?: string;
+  city?: string;
+  type?: string;
+  sort?: SortValue;
+  category?: string;
+};
+
 export function parseDirectorySearch(search: Record<string, unknown>): DirectorySearch {
   const sortValue = search["sort"];
   const sort = sortOptions.some((item) => item.value === sortValue) ? (sortValue as SortValue) : "featured";
@@ -288,6 +341,25 @@ export function parseDirectorySearch(search: Record<string, unknown>): Directory
     type: typeof type === "string" && type ? type : "All",
     sort,
   };
+}
+
+export function parseDirectoryCategory(search: Record<string, unknown>) {
+  const category = search["category"];
+  return typeof category === "string" && category.trim() ? category.trim() : "All";
+}
+
+export function toDirectoryUrlSearch(search: DirectorySearch, category = "All"): DirectoryUrlSearch {
+  return {
+    ...(search.q.trim() ? { q: search.q.trim() } : {}),
+    ...(search.city && search.city !== "All locations" ? { city: search.city } : {}),
+    ...(search.type && search.type !== "All" ? { type: search.type } : {}),
+    ...(search.sort && search.sort !== "featured" ? { sort: search.sort } : {}),
+    ...(category !== "All" ? { category } : {}),
+  };
+}
+
+export function listingsPathFor(country: Country) {
+  return country === "India" ? "/india/listings" : "/uk/listings";
 }
 
 export function filterListings(

@@ -1,14 +1,19 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { DirectoryView } from "@/components/site/directory-view";
 import { JsonLd } from "@/components/site/json-ld";
-import { getCategory, listings } from "@/lib/directory-content";
 import { absoluteUrl, pageHead } from "@/lib/site";
+import { fetchCategoriesFn, fetchCategoryFn } from "@/api/categories";
+import { fetchPublishedListingsFn } from "@/api/listings";
 
 export const Route = createFileRoute("/uk/category/$slug")({
-  loader: ({ params }) => {
-    const category = getCategory("UK", params.slug);
+  loader: async ({ params }) => {
+    const [category, listings, categories] = await Promise.all([
+      fetchCategoryFn({ data: { country: "UK", slug: params.slug } }),
+      fetchPublishedListingsFn({ data: { country: "UK" } }),
+      fetchCategoriesFn({ data: { country: "UK" } }),
+    ]);
     if (!category) throw notFound();
-    return { category };
+    return { category, listings, categories };
   },
   head: ({ loaderData, params }) => {
     const category = loaderData?.category;
@@ -23,8 +28,8 @@ export const Route = createFileRoute("/uk/category/$slug")({
 });
 
 function UkCategoryPage() {
-  const { category } = Route.useLoaderData();
-  const items = listings.filter((item) => item.country === "UK" && item.category === category.name);
+  const { category, listings, categories } = Route.useLoaderData();
+  const items = listings.filter((item) => item.category === category.name);
   return (
     <>
       <JsonLd
@@ -40,7 +45,7 @@ function UkCategoryPage() {
           })),
         }}
       />
-      <DirectoryView country="UK" category={category.name} />
+      <DirectoryView country="UK" category={category.name} listings={listings} categories={categories} />
     </>
   );
 }
