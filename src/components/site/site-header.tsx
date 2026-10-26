@@ -24,9 +24,9 @@ export function SiteHeader({ country = "India" }: { country?: Country }) {
     <header className="border-b border-border bg-background">
       <div className="mx-auto flex h-[76px] w-full max-w-6xl items-center justify-between gap-4 px-5">
         <Link to={home} className="text-xl leading-7 font-semibold" aria-label="Rohit Samaj home">
-          rohit<span className="font-normal">samaj</span>
+          Rohit<span className="font-normal">samaj</span>
         </Link>
-        <nav className="hidden items-center gap-6 text-sm leading-[22px] md:flex" aria-label="Main navigation">
+        <nav className="hidden items-center gap-6 text-base leading-6 md:flex" aria-label="Main navigation">
           <Link to={home} className={navClass(onHome)} aria-current={onHome ? "page" : undefined}>
             Home
           </Link>

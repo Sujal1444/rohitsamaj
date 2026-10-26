@@ -93,6 +93,9 @@ export function HeroSearch({
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     applyFromForm(event.currentTarget);
+    requestAnimationFrame(() => {
+      document.getElementById("listings-title")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   }
 
   return (
@@ -118,8 +121,6 @@ export function HeroSearch({
           Discover businesses, services, and places across {country === "UK" ? "the United Kingdom" : "India"}.
         </p>
         <form
-          method="post"
-          action=""
           className="grid w-full gap-3 rounded-xl bg-white p-3 text-foreground shadow-lg md:grid-cols-[minmax(0,1.6fr)_minmax(12rem,1fr)_minmax(12rem,1fr)_10rem] md:items-stretch"
           onSubmit={onSubmit}
         >
