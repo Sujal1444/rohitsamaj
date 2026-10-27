@@ -67,21 +67,27 @@ export async function destroySession() {
 }
 
 export async function getSessionUser(): Promise<PublicUser | null> {
-  await ensureIndexes();
   const token = getCookie(SESSION_COOKIE);
   if (!token) return null;
 
-  const sessions = await sessionsCollection();
-  const session = await sessions.findOne({
-    tokenHash: hashToken(token),
-    expiresAt: { $gt: new Date() },
-  });
-  if (!session) return null;
+  try {
+    await ensureIndexes();
+    const sessions = await sessionsCollection();
+    const session = await sessions.findOne({
+      tokenHash: hashToken(token),
+      expiresAt: { $gt: new Date() },
+    });
+    if (!session) return null;
 
-  const users = await usersCollection();
-  const user = await users.findOne({ _id: session.userId });
-  if (!user || user.status !== "active") return null;
-  return toPublicUser(user);
+    const users = await usersCollection();
+    const user = await users.findOne({ _id: session.userId });
+    if (!user || user.status !== "active") return null;
+    return toPublicUser(user);
+  } catch (error) {
+    // A database outage must not prevent anonymous visitors from browsing public pages.
+    console.error("Unable to resolve the current session:", error);
+    return null;
+  }
 }
 
 export async function requireUser() {

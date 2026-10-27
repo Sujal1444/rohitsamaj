@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { slugify, type Country, type Service } from "@/lib/directory-content";
+import { categoriesFor, categoryGroups, getCategory, slugify, type Country, type Service } from "@/lib/directory-content";
 import { requireAdmin } from "./auth.server";
 import { categoriesCollection } from "./db.server";
 import { seedDatabase } from "./seed.server";
@@ -21,18 +21,34 @@ async function ensureSeeded() {
 }
 
 export async function getCategories(country?: Country) {
-  await ensureSeeded();
-  const col = await categoriesCollection();
-  const query = country ? { country } : {};
-  const docs = await col.find(query).sort({ name: 1 }).toArray();
-  return docs.map(toService);
+  try {
+    await ensureSeeded();
+    const col = await categoriesCollection();
+    const query = country ? { country } : {};
+    const docs = await col.find(query).sort({ name: 1 }).toArray();
+    return docs.map(toService);
+  } catch (error) {
+    console.error("Unable to load directory categories; using bundled source records:", error);
+    return (country ? categoriesFor(country) : categoriesFor("India").concat(categoriesFor("UK"))).map((item) => ({
+      ...item,
+      groupIds: categoryGroups
+        .filter((group) => group.categories?.includes(item.name as never))
+        .map((group) => group.id)
+        .filter((id) => id !== "all"),
+    }));
+  }
 }
 
 export async function getCategoryBySlug(country: Country, slug: string) {
-  await ensureSeeded();
-  const col = await categoriesCollection();
-  const doc = await col.findOne({ country, slug });
-  return doc ? toService(doc) : null;
+  try {
+    await ensureSeeded();
+    const col = await categoriesCollection();
+    const doc = await col.findOne({ country, slug });
+    return doc ? toService(doc) : null;
+  } catch (error) {
+    console.error("Unable to load directory category; using bundled source records:", error);
+    return getCategory(country, slug) ?? null;
+  }
 }
 
 export async function adminListCategories(country?: Country) {

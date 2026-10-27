@@ -1,5 +1,7 @@
 import { ObjectId } from "mongodb";
 import {
+  getListing,
+  listings,
   slugify,
   type Country,
   type DirectoryType,
@@ -47,19 +49,29 @@ async function ensureSeeded() {
 }
 
 export async function getPublishedListings(country?: Country) {
-  await ensureSeeded();
-  const col = await listingsCollection();
-  const query: Record<string, unknown> = { status: "published" };
-  if (country) query["country"] = country;
-  const docs = await col.find(query).sort({ featured: -1, name: 1 }).toArray();
-  return docs.map(toListing);
+  try {
+    await ensureSeeded();
+    const col = await listingsCollection();
+    const query: Record<string, unknown> = { status: "published" };
+    if (country) query["country"] = country;
+    const docs = await col.find(query).sort({ featured: -1, name: 1 }).toArray();
+    return docs.map(toListing);
+  } catch (error) {
+    console.error("Unable to load directory listings; using bundled source records:", error);
+    return listings.filter((item) => !country || item.country === country);
+  }
 }
 
 export async function getListingBySlug(country: Country, slug: string) {
-  await ensureSeeded();
-  const col = await listingsCollection();
-  const doc = await col.findOne({ country, slug, status: "published" });
-  return doc ? toListing(doc) : null;
+  try {
+    await ensureSeeded();
+    const col = await listingsCollection();
+    const doc = await col.findOne({ country, slug, status: "published" });
+    return doc ? toListing(doc) : null;
+  } catch (error) {
+    console.error("Unable to load directory listing; using bundled source records:", error);
+    return getListing(country, slug) ?? null;
+  }
 }
 
 export async function submitListing(data: {
