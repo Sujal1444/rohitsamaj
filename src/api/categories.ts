@@ -29,6 +29,7 @@ export const adminSaveCategoryFn = createServerFn({ method: "POST" })
         name: z.string().min(1),
         country: z.enum(countries),
         image: z.string().min(1),
+        serviceOrder: z.number().int().min(1).default(1),
         groupIds: z.array(z.string()).optional().default([]),
         sourceUrl: z.string().optional().default(""),
       })

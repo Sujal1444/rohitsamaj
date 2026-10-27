@@ -5,15 +5,16 @@ import { categoriesCollection } from "./db.server";
 import { seedDatabase } from "./seed.server";
 import type { CategoryDoc } from "./types.server";
 
-function toService(doc: CategoryDoc): Service & { id: string; groupIds: string[] } {
+function toService(doc: CategoryDoc): Service & { id: string; groupIds: string[]; serviceOrder: number } {
   return {
     id: doc._id.toHexString(),
     name: doc.name,
     country: doc.country,
     image: doc.image,
+    serviceOrder: doc.serviceOrder ?? 1,
     sourceUrl: doc.sourceUrl,
     groupIds: doc.groupIds,
-  } as Service & { id: string; groupIds: string[] };
+  } as Service & { id: string; groupIds: string[]; serviceOrder: number };
 }
 
 async function ensureSeeded() {
@@ -29,8 +30,9 @@ export async function getCategories(country?: Country) {
     return docs.map(toService);
   } catch (error) {
     console.error("Unable to load directory categories; using bundled source records:", error);
-    return (country ? categoriesFor(country) : categoriesFor("India").concat(categoriesFor("UK"))).map((item) => ({
+    return (country ? categoriesFor(country) : categoriesFor("India").concat(categoriesFor("UK"))).map((item, index) => ({
       ...item,
+      serviceOrder: index + 1,
       groupIds: categoryGroups
         .filter((group) => group.categories?.includes(item.name as never))
         .map((group) => group.id)
@@ -53,7 +55,10 @@ export async function getCategoryBySlug(country: Country, slug: string) {
 
 export async function adminListCategories(country?: Country) {
   await requireAdmin();
-  return getCategories(country);
+  await ensureSeeded();
+  const col = await categoriesCollection();
+  const docs = await col.find(country ? { country } : {}).sort({ country: 1, serviceOrder: 1, name: 1 }).toArray();
+  return docs.map(toService);
 }
 
 export async function adminSaveCategory(data: {
@@ -61,6 +66,7 @@ export async function adminSaveCategory(data: {
   name: string;
   country: Country;
   image: string;
+  serviceOrder: number;
   groupIds: string[];
   sourceUrl: string;
 }) {
@@ -79,6 +85,7 @@ export async function adminSaveCategory(data: {
           slug,
           country: data.country,
           image: data.image,
+          serviceOrder: data.serviceOrder,
           groupIds: data.groupIds,
           sourceUrl: data.sourceUrl,
           updatedAt: now,
@@ -95,6 +102,7 @@ export async function adminSaveCategory(data: {
     slug,
     country: data.country,
     image: data.image,
+    serviceOrder: data.serviceOrder,
     groupIds: data.groupIds,
     sourceUrl: data.sourceUrl,
     createdAt: now,

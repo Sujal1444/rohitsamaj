@@ -9,6 +9,7 @@ import {
 } from "@/lib/directory-content";
 import { getSessionUser, requireAdmin, requireUser } from "./auth.server";
 import { listingsCollection, usersCollection } from "./db.server";
+import { storeListingImage } from "./listing-images.server";
 import { seedDatabase } from "./seed.server";
 import type { ListingDoc, ListingStatus } from "./types.server";
 
@@ -87,6 +88,7 @@ export async function submitListing(data: {
   serviceDetails: string[];
 }) {
   const user = await requireUser();
+  const image = await storeListingImage(data.image);
   await ensureSeeded();
   const col = await listingsCollection();
   const slug = slugify(data.name);
@@ -101,7 +103,7 @@ export async function submitListing(data: {
     directoryType: data.directoryType,
     country: data.country,
     city: data.city.trim(),
-    image: data.image,
+    image,
     rating: null,
     reviews: 0,
     phone: data.phone.trim(),

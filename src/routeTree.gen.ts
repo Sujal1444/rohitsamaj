@@ -30,6 +30,7 @@ import { Route as IndiaIndexRouteImport } from './routes/india/index'
 import { Route as IndiaListingsRouteImport } from './routes/india/listings'
 import { Route as UkIndexRouteImport } from './routes/uk/index'
 import { Route as UkListingsRouteImport } from './routes/uk/listings'
+import { Route as ApiListingImagesIdRouteImport } from './routes/api.listing-images.$id'
 import { Route as IndiaCategorySlugRouteImport } from './routes/india/category/$slug'
 import { Route as IndiaListingSlugRouteImport } from './routes/india/listing/$slug'
 import { Route as UkCategorySlugRouteImport } from './routes/uk/category/$slug'
@@ -140,6 +141,11 @@ const UkListingsRoute = UkListingsRouteImport.update({
   path: '/listings',
   getParentRoute: () => UkRoute,
 } as any)
+const ApiListingImagesIdRoute = ApiListingImagesIdRouteImport.update({
+  id: '/api/listing-images/$id',
+  path: '/api/listing-images/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndiaCategorySlugRoute = IndiaCategorySlugRouteImport.update({
   id: '/category/$slug',
   path: '/category/$slug',
@@ -183,6 +189,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/india/': typeof IndiaIndexRoute
   '/uk/': typeof UkIndexRoute
+  '/api/listing-images/$id': typeof ApiListingImagesIdRoute
   '/india/category/$slug': typeof IndiaCategorySlugRoute
   '/india/listing/$slug': typeof IndiaListingSlugRoute
   '/uk/category/$slug': typeof UkCategorySlugRoute
@@ -207,6 +214,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/india': typeof IndiaIndexRoute
   '/uk': typeof UkIndexRoute
+  '/api/listing-images/$id': typeof ApiListingImagesIdRoute
   '/india/category/$slug': typeof IndiaCategorySlugRoute
   '/india/listing/$slug': typeof IndiaListingSlugRoute
   '/uk/category/$slug': typeof UkCategorySlugRoute
@@ -235,6 +243,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/india/': typeof IndiaIndexRoute
   '/uk/': typeof UkIndexRoute
+  '/api/listing-images/$id': typeof ApiListingImagesIdRoute
   '/india/category/$slug': typeof IndiaCategorySlugRoute
   '/india/listing/$slug': typeof IndiaListingSlugRoute
   '/uk/category/$slug': typeof UkCategorySlugRoute
@@ -264,6 +273,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/india/'
     | '/uk/'
+    | '/api/listing-images/$id'
     | '/india/category/$slug'
     | '/india/listing/$slug'
     | '/uk/category/$slug'
@@ -288,6 +298,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/india'
     | '/uk'
+    | '/api/listing-images/$id'
     | '/india/category/$slug'
     | '/india/listing/$slug'
     | '/uk/category/$slug'
@@ -315,6 +326,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/india/'
     | '/uk/'
+    | '/api/listing-images/$id'
     | '/india/category/$slug'
     | '/india/listing/$slug'
     | '/uk/category/$slug'
@@ -335,6 +347,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   UkRoute: typeof UkRouteWithChildren
+  ApiListingImagesIdRoute: typeof ApiListingImagesIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -486,6 +499,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UkListingsRouteImport
       parentRoute: typeof UkRoute
     }
+    '/api/listing-images/$id': {
+      id: '/api/listing-images/$id'
+      path: '/api/listing-images/$id'
+      fullPath: '/api/listing-images/$id'
+      preLoaderRoute: typeof ApiListingImagesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/india/category/$slug': {
       id: '/india/category/$slug'
       path: '/category/$slug'
@@ -579,6 +599,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   UkRoute: UkRouteWithChildren,
+  ApiListingImagesIdRoute: ApiListingImagesIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

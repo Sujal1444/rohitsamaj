@@ -34,6 +34,7 @@ export type CategoryDoc = {
   country: Country;
   image: string;
   groupIds: string[];
+  serviceOrder: number;
   sourceUrl: string;
   createdAt: Date;
   updatedAt: Date;

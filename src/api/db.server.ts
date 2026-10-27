@@ -1,4 +1,4 @@
-import { MongoClient, type Db } from "mongodb";
+import { GridFSBucket, MongoClient, type Db } from "mongodb";
 import { getEnv } from "./env.server";
 import type { CategoryDoc, ListingDoc, SessionDoc, UserDoc } from "./types.server";
 
@@ -20,6 +20,10 @@ async function connect() {
 export async function getDb() {
   const { db } = await connect();
   return db;
+}
+
+export async function listingImagesBucket() {
+  return new GridFSBucket(await getDb(), { bucketName: "listingImages" });
 }
 
 export async function usersCollection() {

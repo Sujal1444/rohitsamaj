@@ -37,7 +37,7 @@ function AboutPage() {
         <section className="mx-auto grid w-full max-w-6xl items-center gap-10 px-5 py-14 lg:grid-cols-2">
           <div>
             <h2 className="text-[32px] leading-10 font-semibold">
-              <span className="text-brand">About</span>{" "}
+              <span className="text-primary">About</span>{" "}
               <span className="text-brand underline decoration-brand decoration-2 underline-offset-8">RohitSamaj</span>
             </h2>
             <p className="mt-6 text-base leading-[26px] text-muted-foreground">
@@ -56,7 +56,7 @@ function AboutPage() {
           />
         </section>
 
-        <section className="bg-[#f7f4ee]">
+        <section className="bg-secondary">
           <div className="mx-auto w-full max-w-3xl px-5 py-14 text-center">
             <h2 className="text-[32px] leading-10 font-semibold">
               Search Your
@@ -107,26 +107,26 @@ function AboutPage() {
         </section>
 
         <section
-          className="bg-[#f7f4ee] bg-cover bg-center"
-          style={{ backgroundImage: `linear-gradient(rgba(247, 244, 238, 0.92), rgba(247, 244, 238, 0.92)), url(${siteImage("about-bgg.jpg")})` }}
+          className="bg-accent bg-cover bg-center"
+          style={{ backgroundImage: `linear-gradient(rgba(231, 241, 246, 0.94), rgba(231, 241, 246, 0.94)), url(${siteImage("about-bgg.jpg")})` }}
         >
           <div className="mx-auto grid w-full max-w-6xl gap-6 px-5 py-14 md:grid-cols-2">
-            <div className="rounded-lg bg-brand px-8 py-10 text-center text-white">
-              <h2 className="text-[28px] leading-9 font-semibold">
+            <div className="rounded-lg border border-border border-t-4 border-t-primary bg-background px-8 py-10 text-center text-foreground shadow-sm">
+              <h2 className="text-[28px] leading-9 font-semibold text-primary">
                 Our Mission
-                <span className="mx-auto mt-3 block h-0.5 w-14 bg-white" aria-hidden="true" />
+                <span className="mx-auto mt-3 block h-0.5 w-14 bg-primary" aria-hidden="true" />
               </h2>
-              <p className="mt-5 text-base leading-[26px] text-white/95">
+              <p className="mt-5 text-base leading-[26px] text-muted-foreground">
                 Our mission is to create a comprehensive and user-friendly directory that connects people with quality businesses and services
                 while helping local enterprises increase their visibility and reach more customers.
               </p>
             </div>
-            <div className="rounded-lg bg-foreground px-8 py-10 text-center text-white">
-              <h2 className="text-[28px] leading-9 font-semibold">
+            <div className="rounded-lg border border-border border-t-4 border-t-brand bg-background px-8 py-10 text-center text-foreground shadow-sm">
+              <h2 className="text-[28px] leading-9 font-semibold text-brand">
                 Our Vision
-                <span className="mx-auto mt-3 block h-0.5 w-14 bg-white" aria-hidden="true" />
+                <span className="mx-auto mt-3 block h-0.5 w-14 bg-brand" aria-hidden="true" />
               </h2>
-              <p className="mt-5 text-base leading-[26px] text-white/95">
+              <p className="mt-5 text-base leading-[26px] text-muted-foreground">
                 We aim to become a leading online directory that empowers communities by making local information accessible, reliable, and easy
                 to find for everyone.
               </p>

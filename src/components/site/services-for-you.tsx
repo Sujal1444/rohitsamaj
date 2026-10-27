@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import { slugify, type Country, type Service } from "@/lib/directory-content";
 import { serviceAsset } from "@/lib/site-images";
 
-export function ServicesForYou({ country, categories }: { country: Country; categories: Service[] }) {
+export function ServicesForYou({ country, categories }: { country: Country; categories: Array<Service & { serviceOrder?: number }> }) {
   const scrollerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -48,6 +48,10 @@ export function ServicesForYou({ country, categories }: { country: Country; cate
 
   if (!categories.length) return null;
 
+  const orderedCategories = [...categories].sort(
+    (a, b) => (a.serviceOrder ?? Number.MAX_SAFE_INTEGER) - (b.serviceOrder ?? Number.MAX_SAFE_INTEGER) || a.name.localeCompare(b.name),
+  );
+
   return (
     <section
       className="relative isolate overflow-hidden bg-[#f3f3f3] py-14 md:py-16"
@@ -73,7 +77,7 @@ export function ServicesForYou({ country, categories }: { country: Country; cate
           tabIndex={0}
           aria-label="Service categories"
         >
-          {categories.map((item) => (
+          {orderedCategories.map((item) => (
             <Link
               key={item.name}
               to={country === "India" ? "/india/category/$slug" : "/uk/category/$slug"}

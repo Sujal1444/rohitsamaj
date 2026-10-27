@@ -41,18 +41,40 @@ export async function seedDatabase() {
 
   if ((await categories.countDocuments()) === 0) {
     const now = new Date();
-    const docs: CategoryDoc[] = services.map((item) => ({
-      _id: new ObjectId(),
-      name: item.name,
-      slug: slugify(item.name),
-      country: item.country,
-      image: item.image,
-      groupIds: groupsForCategory(item.name),
-      sourceUrl: item.sourceUrl,
-      createdAt: now,
-      updatedAt: now,
-    }));
+    const orderByCountry = new Map<string, number>();
+    const docs: CategoryDoc[] = services.map((item) => {
+      const serviceOrder = (orderByCountry.get(item.country) ?? 0) + 1;
+      orderByCountry.set(item.country, serviceOrder);
+      return {
+        _id: new ObjectId(),
+        name: item.name,
+        slug: slugify(item.name),
+        country: item.country,
+        image: item.image,
+        serviceOrder,
+        groupIds: groupsForCategory(item.name),
+        sourceUrl: item.sourceUrl,
+        createdAt: now,
+        updatedAt: now,
+      };
+    });
     if (docs.length) await categories.insertMany(docs);
+  }
+
+  for (const country of ["UK", "India"] as const) {
+    const missingOrder = await categories.find({ country, serviceOrder: { $exists: false } }).sort({ name: 1 }).toArray();
+    if (missingOrder.length) {
+      const highest = await categories.find({ country, serviceOrder: { $exists: true } }).sort({ serviceOrder: -1 }).limit(1).next();
+      const startingOrder = (highest?.serviceOrder ?? 0) + 1;
+      await categories.bulkWrite(
+        missingOrder.map((doc, index) => ({
+          updateOne: {
+            filter: { _id: doc._id, serviceOrder: { $exists: false } },
+            update: { $set: { serviceOrder: startingOrder + index } },
+          },
+        })),
+      );
+    }
   }
 
   if ((await listingCol.countDocuments()) === 0) {

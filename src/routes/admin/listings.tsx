@@ -2,11 +2,16 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState, type FormEvent } from "react";
 import { countries, directoryTypes, siteImagePath, type Country } from "@/lib/directory-admin";
 import { adminDeleteListingFn, adminListListingsFn, adminSaveListingFn, adminSetListingStatusFn } from "@/api/listings";
+import { adminListCategoriesFn } from "@/api/categories";
 import { pageHead } from "@/lib/site";
 
 export const Route = createFileRoute("/admin/listings")({
   head: () => pageHead({ title: "Listings | Admin", description: "Manage directory listings.", path: "/admin/listings" }),
-  loader: () => adminListListingsFn({ data: {} }),
+  loader: async () => {
+    const listings = await adminListListingsFn({ data: {} });
+    const categories = await adminListCategoriesFn({ data: {} });
+    return { listings, categories };
+  },
   component: AdminListingsPage,
 });
 
@@ -42,13 +47,26 @@ const emptyForm = (): FormState => ({
 });
 
 function AdminListingsPage() {
-  const initial = Route.useLoaderData();
+  const { listings: initial, categories } = Route.useLoaderData();
   const [items, setItems] = useState(initial);
   const [filter, setFilter] = useState<"all" | "published" | "pending" | "rejected">("all");
+  const [countryFilter, setCountryFilter] = useState<"all" | Country>("all");
+  const [query, setQuery] = useState("");
+  const [sort, setSort] = useState<"name-asc" | "name-desc">("name-asc");
   const [form, setForm] = useState<FormState>(emptyForm());
   const [message, setMessage] = useState("");
 
-  const visible = useMemo(() => (filter === "all" ? items : items.filter((item) => item.status === filter)), [items, filter]);
+  const visible = useMemo(() => {
+    const normalizedQuery = query.trim().toLocaleLowerCase();
+    return items
+      .filter((item) => filter === "all" || item.status === filter)
+      .filter((item) => countryFilter === "all" || item.country === countryFilter)
+      .filter((item) => {
+        if (!normalizedQuery) return true;
+        return [item.name, item.category, item.city, item.phone, item.address].some((value) => value.toLocaleLowerCase().includes(normalizedQuery));
+      })
+      .sort((a, b) => (sort === "name-asc" ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)));
+  }, [items, filter, countryFilter, query, sort]);
 
   async function refresh() {
     setItems(await adminListListingsFn({ data: {} }));
@@ -89,17 +107,17 @@ function AdminListingsPage() {
         <p className="mt-2 text-muted-foreground">Create, approve, and edit directory listings.</p>
       </div>
 
-      <div className="flex flex-wrap gap-2">
-        {(["all", "published", "pending", "rejected"] as const).map((value) => (
-          <button key={value} type="button" onClick={() => setFilter(value)} className={`rounded-md px-3 py-1.5 text-sm ${filter === value ? "bg-primary text-white" : "border border-border bg-background"}`}>
-            {value}
-          </button>
-        ))}
-      </div>
-
       <form onSubmit={onSave} className="grid gap-3 rounded-lg border border-border bg-background p-5 md:grid-cols-2">
         <input className="rounded-md border border-border px-3 py-2 text-sm" placeholder="Business name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
-        <input className="rounded-md border border-border px-3 py-2 text-sm" placeholder="Category" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} required />
+        <select className="rounded-md border border-border px-3 py-2 text-sm" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} required>
+          <option value="" disabled>Select a category</option>
+          {!categories.some((category) => category.country === form.country && category.name === form.category) && form.category ? (
+            <option value={form.category}>{form.category} (current listing category)</option>
+          ) : null}
+          {categories.filter((category) => category.country === form.country).map((category) => (
+            <option key={category.id} value={category.name}>{category.name}</option>
+          ))}
+        </select>
         <select className="rounded-md border border-border px-3 py-2 text-sm" value={form.directoryType} onChange={(e) => setForm({ ...form, directoryType: e.target.value as FormState["directoryType"] })}>
           {directoryTypes.map((type) => (
             <option key={type} value={type}>
@@ -107,7 +125,12 @@ function AdminListingsPage() {
             </option>
           ))}
         </select>
-        <select className="rounded-md border border-border px-3 py-2 text-sm" value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value as Country, image: siteImagePath(e.target.value as Country) })}>
+        <select className="rounded-md border border-border px-3 py-2 text-sm" value={form.country} onChange={(e) => {
+          const country = e.target.value as Country;
+          const countryCategories = categories.filter((category) => category.country === country);
+          const category = countryCategories.some((item) => item.name === form.category) ? form.category : countryCategories[0]?.name ?? "";
+          setForm({ ...form, country, category, image: siteImagePath(country) });
+        }}>
           {countries.map((country) => (
             <option key={country} value={country}>
               {country}
@@ -142,6 +165,35 @@ function AdminListingsPage() {
       </form>
       {message ? <p className="text-sm text-primary">{message}</p> : null}
 
+      <div className="space-y-3">
+        <div className="flex flex-wrap gap-2">
+          {(["all", "published", "pending", "rejected"] as const).map((value) => (
+            <button key={value} type="button" onClick={() => setFilter(value)} className={`rounded-md px-3 py-1.5 text-sm ${filter === value ? "bg-primary text-white" : "border border-border bg-background"}`}>
+              {value}
+            </button>
+          ))}
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_12rem_12rem]">
+          <input
+            className="rounded-md border border-border bg-background px-3 py-2 text-sm"
+            type="search"
+            placeholder="Search name, category, city, phone, or address"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            aria-label="Search listings"
+          />
+          <select className="rounded-md border border-border bg-background px-3 py-2 text-sm" value={countryFilter} onChange={(e) => setCountryFilter(e.target.value as "all" | Country)} aria-label="Filter listings by country">
+            <option value="all">All countries</option>
+            {countries.map((country) => <option key={country} value={country}>{country}</option>)}
+          </select>
+          <select className="rounded-md border border-border bg-background px-3 py-2 text-sm" value={sort} onChange={(e) => setSort(e.target.value as typeof sort)} aria-label="Sort listings">
+            <option value="name-asc">Name: A to Z</option>
+            <option value="name-desc">Name: Z to A</option>
+          </select>
+        </div>
+      </div>
+
       <div className="overflow-x-auto rounded-lg border border-border bg-background">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-border bg-secondary">
@@ -154,7 +206,7 @@ function AdminListingsPage() {
             </tr>
           </thead>
           <tbody>
-            {visible.map((item) => (
+            {visible.length ? visible.map((item) => (
               <tr key={item.id} className="border-b border-border last:border-0">
                 <td className="px-4 py-3">{item.name}</td>
                 <td className="px-4 py-3">{item.country}</td>
@@ -208,7 +260,11 @@ function AdminListingsPage() {
                   </div>
                 </td>
               </tr>
-            ))}
+            )) : (
+              <tr>
+                <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">No listings match these filters.</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

@@ -1,5 +1,5 @@
 import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { PageShell } from "@/components/site/page-shell";
 import { PageHero } from "@/components/site/page-hero";
 import { countries, directoryTypes, type Country, type DirectoryType } from "@/lib/directory-content";
@@ -8,6 +8,9 @@ import { pageHead } from "@/lib/site";
 import { getCurrentUser } from "@/api/auth";
 import { fetchCategoriesFn } from "@/api/categories";
 import { submitListingFn } from "@/api/listings";
+
+const maxImageBytes = 10 * 1024 * 1024;
+const allowedImageTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
 
 export const Route = createFileRoute("/add-listing")({
   head: () =>
@@ -37,6 +40,9 @@ function AddListingPage() {
   const [message, setMessage] = useState("");
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
+  const [imageData, setImageData] = useState("");
+  const [imageError, setImageError] = useState("");
+  const [isReadingImage, setIsReadingImage] = useState(false);
   const [directoryType, setDirectoryType] = useState<DirectoryType>("Business");
   const [city, setCity] = useState("");
   const [phone, setPhone] = useState("");
@@ -63,6 +69,14 @@ function AddListingPage() {
       setError("Choose a category.");
       return;
     }
+    if (imageError) {
+      setError(imageError);
+      return;
+    }
+    if (isReadingImage) {
+      setError("Wait for the image to finish loading.");
+      return;
+    }
     try {
       const result = await submitListingFn({
         data: {
@@ -71,7 +85,7 @@ function AddListingPage() {
           directoryType,
           country,
           city,
-          image: siteImagePath(country),
+          image: imageData || siteImagePath(country),
           phone,
           address,
           description,
@@ -88,6 +102,45 @@ function AddListingPage() {
     } catch {
       setError("Could not submit listing. Please try again.");
     }
+  }
+
+  function onImageChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.currentTarget.files?.[0];
+    setImageError("");
+    if (!file) {
+      setImageData("");
+      setIsReadingImage(false);
+      return;
+    }
+
+    if (file.size > maxImageBytes) {
+      setImageData("");
+      setIsReadingImage(false);
+      setImageError("Choose an image that is 10 MB or smaller.");
+      event.currentTarget.value = "";
+      return;
+    }
+    if (!allowedImageTypes.has(file.type)) {
+      setImageData("");
+      setIsReadingImage(false);
+      setImageError("Choose a JPEG, PNG, or WebP image.");
+      event.currentTarget.value = "";
+      return;
+    }
+
+    const reader = new FileReader();
+    setImageData("");
+    setIsReadingImage(true);
+    reader.onload = () => {
+      if (typeof reader.result === "string") setImageData(reader.result);
+      else setImageError("Could not read this image. Please choose another file.");
+      setIsReadingImage(false);
+    };
+    reader.onerror = () => {
+      setImageError("Could not read this image. Please choose another file.");
+      setIsReadingImage(false);
+    };
+    reader.readAsDataURL(file);
   }
 
   return (
@@ -109,6 +162,15 @@ function AddListingPage() {
             Business name
             <input className="rounded-md border border-border px-3 py-2 text-base" value={name} onChange={(event) => setName(event.target.value)} required />
           </label>
+          <label className="grid gap-1 text-sm">
+            Business image (optional)
+            <input className="rounded-md border border-border px-3 py-2 text-base" type="file" accept="image/jpeg,image/png,image/webp" onChange={onImageChange} />
+            <span className="text-xs text-muted-foreground">JPEG, PNG, or WebP. Maximum file size: 10 MB.{isReadingImage ? " Reading image…" : ""}</span>
+            {imageError ? <span className="text-sm text-brand">{imageError}</span> : null}
+          </label>
+          {imageData ? (
+            <img src={imageData} alt="Business image preview" className="max-h-64 w-fit max-w-full rounded-md border border-border object-contain" />
+          ) : null}
           <label className="grid gap-1 text-sm">
             Category
             <select className="rounded-md border border-border px-3 py-2 text-base" value={category} onChange={(event) => setCategory(event.target.value)} required>

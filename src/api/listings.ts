@@ -20,7 +20,7 @@ const listingInputSchema = z.object({
   directoryType: z.enum(directoryTypes),
   country: z.enum(countries),
   city: z.string().min(1),
-  image: z.string().min(1),
+  image: z.string().min(1).max(14_000_100),
   phone: z.string().optional().default(""),
   address: z.string().optional().default(""),
   description: z.string().optional().default(""),

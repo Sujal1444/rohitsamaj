@@ -73,9 +73,7 @@ export function ListingDetails({ country, slug, initial }: { country: Country; s
           <img
             src={listing.image}
             alt={listing.name}
-            width={960}
-            height={540}
-            className="h-72 w-full rounded-xl bg-accent object-cover md:h-96"
+            className="mx-auto block h-auto w-auto max-h-[min(70vh,42rem)] max-w-full rounded-xl bg-accent object-contain"
           />
           <h2 className="mt-8 text-[32px] leading-10 font-semibold text-foreground">About this business</h2>
           <p className="mt-4 text-base leading-[26px] text-foreground">{listing.description}</p>
