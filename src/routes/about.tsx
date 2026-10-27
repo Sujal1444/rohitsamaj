@@ -48,7 +48,7 @@ function AboutPage() {
           </div>
           <img
             src={siteImage("about-memory.png")}
-            alt="In memory of our father — your love, wisdom and values continue to guide us every day"
+            alt="In memory of our father â€” your love, wisdom and values continue to guide us every day"
             width={580}
             height={398}
             className="w-full rounded-lg object-cover"
@@ -64,7 +64,7 @@ function AboutPage() {
               Favourite Listings
             </h2>
             <p className="mt-5 text-base leading-[26px] text-muted-foreground">
-              Whether you’re looking for a driving school, IT services, survey consultants, restaurants, hospitals, educational institutes, or
+              Whether youâ€™re looking for a driving school, IT services, survey consultants, restaurants, hospitals, educational institutes, or
               other local businesses, RohitSamaj brings together a wide range of verified listings to help you make informed decisions.
             </p>
           </div>

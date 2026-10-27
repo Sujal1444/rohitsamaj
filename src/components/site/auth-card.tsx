@@ -48,11 +48,11 @@ export function AuthLinks() {
       <Link to="/login" className="text-primary hover:underline">
         Login
       </Link>
-      {" · "}
+      {" Â· "}
       <Link to="/register" className="text-primary hover:underline">
         Register
       </Link>
-      {" · "}
+      {" Â· "}
       <Link to="/forgot-password" className="text-primary hover:underline">
         Forgot password
       </Link>

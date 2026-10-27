@@ -50,7 +50,7 @@ function LoginPage() {
         </AuthField>
         {error ? <p className="text-sm text-brand">{error}</p> : null}
         <button type="submit" disabled={pending} className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-white disabled:opacity-60">
-          {pending ? "Signing in…" : "Sign in"}
+          {pending ? "Signing inâ€¦" : "Sign in"}
         </button>
       </form>
     </AuthCard>
@@ -64,7 +64,7 @@ function AuthFooter() {
       <Link to="/register" className="text-primary hover:underline">
         Register
       </Link>
-      {" · "}
+      {" Â· "}
       <Link to="/forgot-password" className="text-primary hover:underline">
         Forgot password
       </Link>

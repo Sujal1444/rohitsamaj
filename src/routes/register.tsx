@@ -65,7 +65,7 @@ function RegisterPage() {
         </AuthField>
         {error ? <p className="text-sm text-brand">{error}</p> : null}
         <button type="submit" disabled={pending} className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-white disabled:opacity-60">
-          {pending ? "Creating…" : "Create account"}
+          {pending ? "Creatingâ€¦" : "Create account"}
         </button>
       </form>
     </AuthCard>

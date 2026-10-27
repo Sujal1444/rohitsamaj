@@ -55,7 +55,7 @@ function ForgotPasswordPage() {
           </p>
         ) : null}
         <button type="submit" disabled={pending} className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-white disabled:opacity-60">
-          {pending ? "Sending…" : "Send reset link"}
+          {pending ? "Sendingâ€¦" : "Send reset link"}
         </button>
       </form>
     </AuthCard>

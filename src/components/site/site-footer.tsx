@@ -25,7 +25,7 @@ export function SiteFooter() {
       <div className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-12 text-sm leading-[22px] md:grid-cols-3">
         <div>
           <p className="text-xl leading-7 font-semibold">Rohitsamaj</p>
-          <p className="mt-2 text-xs leading-4 text-white/70">© 2026 Rohit Samaj. All rights reserved.</p>
+          <p className="mt-2 text-xs leading-4 text-white/70">Â© 2026 Rohit Samaj. All rights reserved.</p>
         </div>
         <address className="not-italic text-white/80">
           <p className="font-medium text-white">Contact</p>

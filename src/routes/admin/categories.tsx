@@ -116,7 +116,7 @@ function AdminCategoriesPage() {
               <tr key={item.id} className="border-b border-border last:border-0">
                 <td className="px-4 py-3">{item.name}</td>
                 <td className="px-4 py-3">{item.country}</td>
-                <td className="px-4 py-3">{item.groupIds.join(", ") || "—"}</td>
+                <td className="px-4 py-3">{item.groupIds.join(", ") || "â€”"}</td>
                 <td className="px-4 py-3">
                   <div className="flex flex-wrap gap-2">
                     <button
