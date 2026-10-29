@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Heart, MapPin, Star } from "lucide-react";
-import { listingPath, type Listing } from "@/lib/directory-content";
+import type { Listing } from "@/lib/directory-content";
 
 export function ListingGrid({
   listings,
@@ -28,12 +28,26 @@ export function ListingGrid({
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {listings.map((item) => (
         <article key={item.id} className="overflow-hidden rounded-lg border border-border bg-background">
-          <div className="relative h-44 bg-accent">
-            <img src={item.image} alt={item.name} width={360} height={180} className="h-full w-full object-cover" loading="lazy" />
+          <div className={`relative ${item.id === "jy-school-of-motoring" ? "h-52" : "h-44"} bg-accent`}>
+            <Link
+              to={item.country === "India" ? "/india/listing/$slug" : "/uk/listing/$slug"}
+              params={{ slug: item.slug }}
+              className="block h-full w-full focus-visible:outline-offset-[-3px]"
+              aria-label={`View ${item.name}`}
+            >
+              <img
+                src={item.image}
+                alt={item.name}
+                width={360}
+                height={180}
+                className={`h-full w-full ${item.id === "jy-school-of-motoring" ? "object-contain" : "object-cover transition-transform duration-300 hover:scale-[1.03]"}`}
+                loading="lazy"
+              />
+            </Link>
             {item.featured ? <span className="absolute top-3 left-3 rounded bg-background px-2 py-1 text-xs leading-4 font-medium">Popular</span> : null}
             <button
               type="button"
-              className="absolute top-3 right-3 inline-flex size-9 items-center justify-center rounded-full bg-background"
+              className="absolute top-3 right-3 z-10 inline-flex size-16 items-center justify-center rounded-full bg-background"
               aria-label={`${saved.includes(item.id) ? "Unsave" : "Save"} ${item.name}`}
               aria-pressed={saved.includes(item.id)}
               onClick={() => onToggleSaved(item.id)}

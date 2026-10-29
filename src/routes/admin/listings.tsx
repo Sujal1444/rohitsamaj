@@ -55,6 +55,8 @@ function AdminListingsPage() {
   const [sort, setSort] = useState<"name-asc" | "name-desc">("name-asc");
   const [form, setForm] = useState<FormState>(emptyForm());
   const [message, setMessage] = useState("");
+  const [uploadedImage, setUploadedImage] = useState("");
+  const [imageError, setImageError] = useState("");
 
   const visible = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase();
@@ -75,29 +77,56 @@ function AdminListingsPage() {
   async function onSave(event: FormEvent) {
     event.preventDefault();
     setMessage("");
-    await adminSaveListingFn({
-      data: {
-        id: form.id,
-        name: form.name,
-        category: form.category,
-        directoryType: form.directoryType,
-        country: form.country,
-        city: form.city,
-        image: form.image || siteImagePath(form.country),
-        phone: form.phone,
-        address: form.address,
-        description: form.description,
-        serviceDetails: form.serviceDetails
-          .split("\n")
-          .map((line) => line.trim())
-          .filter(Boolean),
-        featured: form.featured,
-        status: form.status,
-      },
-    });
-    setForm(emptyForm());
-    setMessage("Listing saved.");
-    await refresh();
+    setImageError("");
+    try {
+      await adminSaveListingFn({
+        data: {
+          id: form.id,
+          name: form.name,
+          category: form.category,
+          directoryType: form.directoryType,
+          country: form.country,
+          city: form.city,
+          image: uploadedImage || form.image || siteImagePath(form.country),
+          phone: form.phone,
+          address: form.address,
+          description: form.description,
+          serviceDetails: form.serviceDetails
+            .split("\n")
+            .map((line) => line.trim())
+            .filter(Boolean),
+          featured: form.featured,
+          status: form.status,
+        },
+      });
+      setForm(emptyForm());
+      setUploadedImage("");
+      setMessage("Listing saved.");
+      await refresh();
+    } catch {
+      setImageError("Could not save the listing image. Use a JPEG, PNG, or WebP image up to 10 MB.");
+    }
+  }
+
+  function onImageSelect(file?: File) {
+    setImageError("");
+    if (!file) return;
+    setUploadedImage("");
+    if (file.size > 10 * 1024 * 1024) {
+      setImageError("Image must be 10 MB or smaller.");
+      return;
+    }
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      setImageError("Choose a JPEG, PNG, or WebP image.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") setUploadedImage(reader.result);
+      else setImageError("Could not read this image. Please try another file.");
+    };
+    reader.onerror = () => setImageError("Could not read this image. Please try another file.");
+    reader.readAsDataURL(file);
   }
 
   return (
@@ -138,7 +167,16 @@ function AdminListingsPage() {
           ))}
         </select>
         <input className="rounded-md border border-border px-3 py-2 text-sm" placeholder="City" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} required />
-        <input className="rounded-md border border-border px-3 py-2 text-sm" placeholder="Image path" value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} />
+        <input className="rounded-md border border-border px-3 py-2 text-sm" placeholder="Image path or URL" value={form.image} onChange={(e) => { setForm({ ...form, image: e.target.value }); setUploadedImage(""); }} />
+        <div className="space-y-2 md:col-span-2">
+          <label className="flex cursor-pointer flex-wrap items-center gap-3 rounded-md border border-dashed border-border bg-secondary/50 px-3 py-3 text-sm hover:border-primary/50">
+            <span className="rounded-md bg-background px-3 py-1.5 font-medium text-primary">Choose image</span>
+            <span className="text-muted-foreground">JPEG, PNG, or WebP · up to 10 MB</span>
+            <input className="sr-only" type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => onImageSelect(event.currentTarget.files?.[0])} />
+          </label>
+          {uploadedImage ? <img src={uploadedImage} alt="Selected listing preview" className="h-24 w-40 rounded-md border border-border object-cover" /> : null}
+          {imageError ? <p className="text-xs text-brand" role="alert">{imageError}</p> : null}
+        </div>
         <input className="rounded-md border border-border px-3 py-2 text-sm" placeholder="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
         <input className="rounded-md border border-border px-3 py-2 text-sm" placeholder="Address" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} />
         <textarea className="rounded-md border border-border px-3 py-2 text-sm md:col-span-2" placeholder="Description" rows={3} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
@@ -168,7 +206,7 @@ function AdminListingsPage() {
       <div className="space-y-3">
         <div className="flex flex-wrap gap-2">
           {(["all", "published", "pending", "rejected"] as const).map((value) => (
-            <button key={value} type="button" onClick={() => setFilter(value)} className={`rounded-md px-3 py-1.5 text-sm ${filter === value ? "bg-primary text-white" : "border border-border bg-background"}`}>
+            <button key={value} type="button" onClick={() => setFilter(value)} className={`rounded-md px-3 py-1.5 text-sm capitalize ${filter === value ? "bg-primary text-white" : "border border-border bg-background"}`}>
               {value}
             </button>
           ))}
@@ -211,13 +249,15 @@ function AdminListingsPage() {
                 <td className="px-4 py-3">{item.name}</td>
                 <td className="px-4 py-3">{item.country}</td>
                 <td className="px-4 py-3">{item.category}</td>
-                <td className="px-4 py-3">{item.status}</td>
+                <td className="px-4 py-3 capitalize">{item.status}</td>
                 <td className="px-4 py-3">
                   <div className="flex flex-wrap gap-2">
                     <button
                       type="button"
                       className="rounded border border-border px-2 py-1"
-                      onClick={() =>
+                      onClick={() => {
+                        setUploadedImage("");
+                        setImageError("");
                         setForm({
                           id: item.id,
                           name: item.name,
@@ -232,8 +272,8 @@ function AdminListingsPage() {
                           serviceDetails: item.serviceDetails.join("\n"),
                           featured: item.featured,
                           status: item.status,
-                        })
-                      }
+                        });
+                      }}
                     >
                       Edit
                     </button>

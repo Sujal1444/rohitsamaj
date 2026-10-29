@@ -70,6 +70,7 @@ export function CategoryGrid({ country, categories, listings }: { country: Count
           ) : (
             visible.map((item) => {
               const count = listingCount(country, item.name, listings);
+              const categoryImage = country !== "UK" ? item.image : item.name === "Driving School" ? "/images/driving-school.png" : item.name === "Handy Man" ? "/images/handyman-category.png" : item.image;
               return (
                 <Link
                   key={item.name}
@@ -78,7 +79,7 @@ export function CategoryGrid({ country, categories, listings }: { country: Count
                   className="group overflow-hidden rounded-md border border-border bg-background transition duration-300 ease-out hover:-translate-y-1 hover:border-primary/30 hover:shadow-md"
                 >
                   <img
-                    src={item.image}
+                    src={categoryImage}
                     alt={item.name}
                     width={300}
                     height={200}

@@ -156,6 +156,7 @@ export async function adminSaveListing(data: {
   listedAt?: string | null | undefined;
 }) {
   await requireAdmin();
+  const image = await storeListingImage(data.image);
   await ensureSeeded();
   const col = await listingsCollection();
   const now = new Date();
@@ -173,7 +174,7 @@ export async function adminSaveListing(data: {
           directoryType: data.directoryType,
           country: data.country,
           city: data.city.trim(),
-          image: data.image,
+          image,
           phone: data.phone.trim(),
           phoneHref: phoneHref(data.phone, data.country),
           address: data.address.trim(),
@@ -200,7 +201,7 @@ export async function adminSaveListing(data: {
     directoryType: data.directoryType,
     country: data.country,
     city: data.city.trim(),
-    image: data.image,
+    image,
     rating: null,
     reviews: 0,
     phone: data.phone.trim(),

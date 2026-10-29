@@ -86,7 +86,7 @@ export function ServicesForYou({ country, categories }: { country: Country; cate
             >
               <span className="block overflow-hidden">
                 <img
-                  src={item.image}
+                  src={country === "UK" && item.name === "Driving School" ? "/images/driving-school.png" : item.image}
                   alt={item.name}
                   width={280}
                   height={360}
